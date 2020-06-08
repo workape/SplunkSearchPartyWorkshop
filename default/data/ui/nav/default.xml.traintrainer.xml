@@ -1,0 +1,38 @@
+<nav search_view="search" color="#3267bc">
+  <view name="start_here" default="true"/>
+  <view name="search" />
+  <view name="datasets" />
+  <view name="reports" />
+  <view name="alerts" />
+  <view name="dashboards" />
+  <collection label="Workshop Topics">
+    <collection label="Basic HTTP Server Access Logs">
+      <a href="tutorial_no_search?mod=web&amp;topic=1">1 | Load Data</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=2">2 | Base Search</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=3">3 | Field Extraction</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=4">4 | Search View</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=5">5 | Table Command</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=6">6 | Timechart</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=7">7 | Eval</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=8">8 | Top and Rare</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=9">9 | Stats</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=10">10 | Eventstats</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=11">11 | Streamstats</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=12">12 | Cluster</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=13">13 | Transaction</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=14">14 | Sort, Head, Tail</a>
+      <a href="tutorial_with_search?mod=web&amp;topic=15">15 | Iplocation, Geostats, Geom</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=16">16 | Use Cases/Review</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=17">17 | Lookups</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=18">18 | Tags</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=19">19 | Event Types</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=20">20 | Field Aliases</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=21">21 | Calculated Fields</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=22">22 | Data Models and Pivot</a>
+      
+    </collection>
+    <collection label="Basic Windows Security Events">
+      <a href="tutorial_no_search?mod=win&amp;topic=0">Coming Soon</a>
+    </collection>
+  </collection>
+</nav>

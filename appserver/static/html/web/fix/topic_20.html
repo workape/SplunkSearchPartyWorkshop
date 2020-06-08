@@ -1,0 +1,79 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Calculated Fields</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    In the Eval topic earlier on in the workshop, you learned how to create fields inline using calculations. Eval expressions can be complex, and if you need to use a long and complex eval expression on a regular basis, retyping the expression accurately can be tedious.
+    </p>
+    <p>
+    Instead, you can use calculated fields as a shortcut for performing repetitive, long, or complex transformations using the eval command.	
+    </p>
+	<p>
+    Calculated fields enable you to define fields with eval expressions. When writing a search, you can cut out the eval expression and reference the field like any other extracted field. The fields are extracted at search time and added to events that include the fields in the eval expressions.
+	</p>
+    <p>
+    <span class="ls_c">We are going to create a calculated field for the same mbytes definition you performed manually in Example 2 of the Eval topic.</span>
+    </p>
+    
+
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">1. Create Calculated Field</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">2. Test Calculated Field</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          <ul class="ls_list">
+            <li>Click “Add new” to the right of the “Calculated fields”</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/calc_field_add.png" width="75%"/><br/><br/></li>
+            <li>Make sure the “Destination app” is <span class="ls_f">search_party_workshop</span></li>
+            <li>Make sure “Apply to” is set to <span class="ls_f">sourcetype</span>, and in the “named” box you type <span class="ls_f">access_combined</span>. (Make sure you spell access_combined correctly !!)</li>            
+            <li>In the "Name" box, type <span class="ls_f">mbytes</span></li>
+			<li>In the "Eval expression" box, type <span class="ls_f">bytes/1024/1024</span></li>
+			<li>Click the “Save” button</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          <ul class="ls_list">
+            <li>Go to search by first selecting "Apps" -> "Search Party Workshop"</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/spw_calc.png" width="75%"/><br/><br/></li>
+            <li>Then click on "Search", which is located on the upper left side just next to "Start Here".</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/ss.png" width="25%"/></li>
+         </ul>
+         </p>
+          <ul class="ls_list">
+            <li>Using a timeframe of October 1, 2016, type the following in the search bar:</li>
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+            </span>
+          </p>
+          <p>
+          <ul class="ls_list">
+            <li>If the calculated field worked, you will see a new field called <span class="ls_f">mbytes</span> under the interesting fields on the left hand side.<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/mbytes.png" width="80%"/><br/><br/></li>
+          </ul>
+          <a href="tutorial_no_search?mod=$mod$&topic=21"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="action_frame">
+<iframe src="/manager/search_party_workshop/fields?input_mode=1&hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>

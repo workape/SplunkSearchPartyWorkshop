@@ -1,0 +1,159 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Timechart</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Timechart" target="_blank">timechart command</a> command will take raw events (i.e. from a base search) and produce a table of results where the first column is the <span class="ls_f">_time</span> field (represented in time spans which cover a range of time and therefore events) and any subsequent columns are numeric values which may be used to visualize the data in a histogram.  The <span class="ls_c">timechart</span> command allows for the use of subcommands or "evaluation expressions" such as <span class="ls_cfunc">count, avg(), max(), min(), stdev()</span>, and others.
+    </p>
+    <p>
+    Generally speaking, the timechart command will be used to create a graph representation of the data, but it's important to understand that these visualizations only require a correct tabular format to be provided.  The <span class="ls_c">timechart</span> command isn't the only way to get such an output.
+    </p>
+    <p>
+    When using <span class="ls_c">timechart</span>, the comand will automatically "bucket" events together by slices of time.  Even considering 1 second intervals there will be multiple events within that slice of time.  Splunk can automatically determine a good width of time to "bucket" the events into depending on how long the overall period being searched is.  For instance, a report over a full month may "bucket" events per day.  If you wanted to change this to a per-week basis you may do so by using the <span class="ls_copts">span</span> argument and passing in a <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/SearchTimeModifiers#How_to_specify_relative_time_modifiers" target="_blank">time modifier</a>.  Some examples of time modifiers are: 5m (5 minutes), 1h (1 hour), 7d (7 days), 1w (1 week), etc.
+    </p>
+    <p>Example Event:<br/>
+    <code>62.148.178.74 - - [26/Oct/2016 17:42:44:039637] "GET /oldlink?item_id=MCB-6&JSESSIONID=SD2SCL7FF3ADFF4 HTTP 1.1" 200 1782 "http://shop.acme.com/oldlink?item_id=MCB-6" "mozilla/5.0 (Linux; U; Android 2.3.3; en-us; GT-I9100 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1" 311</code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Example 5</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          If you consider that the volume of events produced by HTTP access logging would correlate to the amount of end-user activity, a simple step to take in Splunk in order to understand our web activity would be to show the number or count of events over a time period.  To do this we need a base search to start with, and the <span class="ls_c">timechart</span> command.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_cfunc">count</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should include <span class="ls_f">_time</span> and <span class="ls_v">count</span> fields and values only.</li>
+            <li>The _time column will no longer reflect the specific time of any single event, but a span of time representing all of the events which fit into the span.</li>
+            <li>The count column reflects the number of events falling into the time span.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          If we'd like to maintain our focus on web activity, but specifically with respect to a particular attribute / field within the data, we can group the events <span class="ls_cparams">by</span> the field name.  The <span class="ls_f">status</span> field extraction captures the portion of the event containing the "HTTP server response code", such as <span class="ls_v">404</span> (page not found), <span class="ls_v">503</span> (service unavilable), <span class="ls_v">200</span> (Ok), etc.  If we want to have Splunk tell us how many of each status code exist within the data, grouped by days (rather than hours, weeks, or whatever Splunk would automatically determine), we can take this approach:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_cfunc">count</span>
+              <span class="ls_change">
+                <span class="ls_cparams">by</span>
+                <span class="ls_f">status</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should include <span class="ls_f">_time</span> and additional columns containing the count of each unique <span class="ls_f">status</span> value found in the data, with the <span class="ls_f">status</span> value as the column name.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Working from Example 2, if we'd like to limit our timechart results to only count "bad" status codes (i.e. values equal to or greater than <span class="ls_v">400</span>), we just need to modify our base search to limit the result set to only the events with "bad" <span class="ls_f">status</span> field values:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_v">$stype$</span> 
+              <span class="ls_change">
+                <span class="ls_f">status</span>&gt;=<span class="ls_v">400</span> 
+              </span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">status</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should include <span class="ls_f">_time</span> and additional columns containing the count of each unique <span class="ls_f">status</span> value found in the data, with the <span class="ls_f">status</span> value as the column name.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          We have other interesting fields to work with in this data.  For example, we can look at statistics surrounding the <span class="ls_f">bytes</span> field if we wanted to check for clients who might be outliers in the amount being transferred -- we may view them as a security threat or a symptom of an operational issue.  When calling these functions, such as <span class="ls_cfunc">sum()</span>, a new field is dynamically created for us.  The addition of "as total_bytes" tells the <span class="ls_c">timechart</span> command that we'd like to set our own name for that field.  This is also known as a <b>field alias</b>. <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Addaliasestofields">Field aliases can also be created in the GUI</a>, which will then get applied to fields associated with a given sourcetype, source, or host. We have an exercise for you on field aliases later in the tutorial. Anyways, give it a try with and without the "as total_bytes" or "as max_bytes" to view the difference.  You can also specify different names for these if you'd like.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_copts">limit</span>=5
+              <span class="ls_cfunc">sum(</span><span class="ls_f">bytes</span><span class="ls_cfunc">)</span>
+              as total_bytes
+              <span class="ls_cfunc">max(</span><span class="ls_f">bytes</span><span class="ls_cfunc">)</span>
+              as max_bytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should include <span class="ls_f">_time</span> and additional columns containing the sum and max of bytes for each unique <span class="ls_f">clientip</span> value found in the data.  By default, timechart will only return the top 10 of each with the remainder falling into the "OTHER" bucket.  You can specify a <span class="ls_copts">limit</span>=<i>integer_value</i> for more results, but it's not possible to plot or view each and every result in large data sets.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          Working from the previous example, we can use a <span class="ls_cparams">WHERE</span> clause to filter our results down to only those that satisfy a condition that we define.  Below we use a special term of "top5":
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_cfunc">max(</span><span class="ls_f">bytes</span><span class="ls_cfunc">)</span>
+              as max_bytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+              <span class="ls_cparams">WHERE</span>
+              <span class="ls_f">max</span>
+              in top5
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+          </ul>
+          <a href="tutorial_with_search?mod=$mod$&topic=6"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

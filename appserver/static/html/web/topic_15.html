@@ -1,0 +1,301 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Use Cases/Review</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    Now that you've practiced with the search language a bit, let's introduce some use cases to think through.  
+    Below you'll see the Search view again.  Please use this to work through searches.
+    </p>
+    <p>
+    Your coworker, Buttercup, heard that you're using Splunk.  Buttercup is trying to track down some information about the web servers and was hoping that you might be able to help her out.  See if you can answer the questions below.  I'll leave you some hints and an answer, but don't peek at the answer until you're done with your search please!
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Question 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Question 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Question 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Question 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Question 5</a></li>
+        <li class="nav"><a href="#e6" data-toggle="tab">Question 6</a></li>
+        <li class="nav"><a href="#e7" data-toggle="tab">Question 7</a></li>
+        <li class="nav"><a href="#e8" data-toggle="tab">Question 8</a></li>
+        <li class="nav"><a href="#e9" data-toggle="tab">Question 9</a></li>
+        <li class="nav"><a href="#e10" data-toggle="tab">Question 10</a></li>
+        <li class="nav"><a href="#e11" data-toggle="tab">Question 11</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Buttercup's first question is (scroll down if you need hints):
+          </p>
+          <p>
+            <i>"On October 1 2016, how many web hits were there for iPhone devices?"</i>
+          </p>
+          <p class="ls_hint">
+            Hint: You could just add the term to your base search, but what if iPhone shows up in an event outside of the useragent field?
+          </p>
+          <p class="ls_hint">
+            Hint: When using field=value format to search for iPhones, make sure you use wildcards around the iPhone term (e.g. *iphone*), because the term is found in the middle of the entire useragent string.
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent=*iphone*
+            </span>
+            <ul class="ls_list">
+              <li>You should have 12,677 results.
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          Buttercup's next question is:
+          </p>
+          <p>
+            <i>"On October 1 2016, how many events were not for iPhone devices?"</i>
+          </p>
+          <p class="ls_hint">
+            Hint: It's generally preferred to be inclusive in searches rather than exclusive (i.e. to whitelist instead of blacklist).  In this case, it's not possible to do so without risking inaccuracy.  Use the <span class="ls_bool">NOT</span> keyword, or "!=" operator.
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent!=*iphone*
+            </span>
+            <ul class="ls_list">
+              <li>You should have 28,246 results.
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"Can we get rid of the non-mobile useragents in the previous results?"</i>
+          </p>
+          <p class="ls_hint">
+          Hint: Make sure your base search explicitly gets all (*) useragents containing the term "mobile" too
+          </p>
+          <p class="ls_hint">
+          Hint: An <span class="ls_bool">AND</span> is implied between search terms
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent!=*iPhone* useragent=*mobile*
+            </span>
+            <ul class="ls_list">
+              <li>You should have 23,945 results.
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"Very cool, but the events are hard on my eyes.  Is there another way to view the results?"</i>
+          </p>
+          <p class="ls_hint">
+          Hint: You could click on the <span class="ls_f">useragent</span> field name in the field picker to see the top 10 useragents at a glance, but I think Buttercup wants to see a table of results
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent!=*iPhone* useragent=*mobile* | table useragent
+            </span>
+            <ul class="ls_list">
+              <li>You should still have 23,945 results, with a row for each of them over many pages.
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"Great, but I just need the total count for each of the unique useragents.</i>
+          </p>
+          <p class="ls_hint">
+          Hint: There are many ways to count these up, but <span class="ls_c">stats</span> is as tried and true as any
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent!=*iPhone* useragent=*mobile* | stats count by useragent
+            </span>
+            <ul class="ls_list">
+              <li>You should still have 23,945 results, but only 3 pages of result rows.
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e6">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"Oh wonderful! How do we sort this output so that the highest counts are at the top of the list?</i>
+          </p>
+          <p class="ls_hint">
+          Hint: When you're just using the web interface interactively you can click on the column names to sort.
+          </p>
+          <p class="ls_hint">
+          Hint: When you're *not* just using the web interface use <span class="ls_c">sort</span>.  Remember that the default sort order is ascending.  To make it descend instead we need to precede the field name with a "-"
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent!=*iPhone* useragent=*mobile* | stats count by useragent | sort -count
+            </span>
+            <ul class="ls_list">
+              <li>You should still have 23,945 results, but only 3 pages of result rows.
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e7">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"That's very helpful!  I hate to be a pain, but I'd also just love to see the useragents broken out into categories: Android, iOS, and Other.  How can you do that?"</i>
+          </p>
+          <p class="ls_hint">
+          Hint: An <span class="ls_c">eval</span> <span class="ls_cfunc">case</span>() statement using the <span class="ls_f">useragent</span> field could be used to add a new field and set it accordingly
+          </p>
+          <p class="ls_hint">
+          Hint: <span class="ls_c">eval</span> lets you compare text with wildcards using <span class="ls_bool">LIKE</span> %Thing%.
+          </p>
+          <p class="ls_hint">
+          Hint: Use a quick call to <span class="ls_c">top</span> at the end to display nicely.
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent=* | eval cat = case(useragent LIKE "%Android%", "Android", useragent LIKE "%iPhone%", "iOS", useragent LIKE "%iPad%", "iOS", true(), "Other") | top cat
+            </span>
+            <ul class="ls_list">
+              <li>You should have 40,923 results, but only 3 rows in your results</li>
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e8">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"Whoa! Can we get those results for just the purchase actions, and instead of just the total, is it possible to see how many per hour?</i>
+          </p>
+          <p class="ls_hint">
+          Hint: You need to modify the base search a bit
+          </p>
+          <p class="ls_hint">
+          Hint: There are many ways to report against time, maybe the <span class="ls_c">timechart</span> command with a <span class="ls_copts">span</span> option would help?
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ useragent=* action=purchase | eval cat = case(useragent LIKE "%Android%", "Android", useragent LIKE "%iPhone%", "iOS", useragent LIKE "%iPad%", "iOS", true(), "Other") | timechart count by cat span=1h
+            </span>
+            <ul class="ls_list">
+              <li>You should have 1,890 results, but only 3 rows in your results</li>
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e9">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"I see you used a command called timechart there.  Can we see this data in a chart?</i>
+          </p>
+          <p class="ls_hint">
+          Hint: Below the search bar you have tabs.  Do you remember where to go?
+          </p>
+          <p class="ls_hint">
+          Answer: Switch to the Visualization tab.  You can select from different types of charts.  A "stacked" column chart might work well here (Under "Format->General" found in the charting area of the page)
+          </p>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e10">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"Oh great!  Can you also tell me what our top products were on October 1, 2016?  Just the total this time."</i>
+          </p>
+          <p class="ls_hint">
+          Hint: Don't forget to change the timepicker
+          </p>
+          <p class="ls_hint">
+          Hint: Use the <span class="ls_f">product_id</span> field
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ product_id=* | top product_id
+            </span>
+            <ul class="ls_list">
+              <li>You should have 21,050 results, but only the top 10 rows in your results</li>
+            </ul>
+            <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e11">
+          <p>
+          Buttercup says:
+          </p>
+          <p>
+          <i>"Splunk sure is useful!  We've been trying to understand product popularity in different parts of the world for the entire month of October 2016. Can we do that too?</i>
+          </p>
+          <p class="ls_hint">
+          Hint: Make sure your base search ensures that the <span class="ls_f">product_id</span> field exists in the events
+          </p>
+          <p class="ls_hint">
+          Hint: You'll need <span class="ls_c">iplocation</span> and <span class="ls_c">geostats</span>
+          </p>
+          <p class="ls_hint">
+          Answer:<br/><br/>
+            <span class="ls_example">
+              index=$idx$ sourcetype=$stype$ product_id=* | iplocation clientip | geostats count by product_id
+            </span>
+            <ul class="ls_list">
+              <li>You should have 542,801 results</li>
+              <li>Flip to the "Visualization" tab and show Buttercup the "Cluster Map" view of this data</li>
+              <li><span class="ls_cfunc">YOU HAVE COMPLETED THE LAST QUESTION</span></li>
+            </ul>
+            <a href="tutorial_no_search?mod=$mod$&topic=16"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="action_frame">
+  <iframe src="/app/search_party_workshop/search?earliest=&latest=1475380800&q=search%20index%3D$idx$%20sourcetype%3D$stype$%20&display.page.search.mode=verbose&dispatch.sample_ratio=1&hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>

@@ -1,0 +1,156 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Base Search</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    Think of an <b>index</b> as similar to a directory or folder on your computer.  The index is a way to group specific sets of information or data together in order to allow you to be selective when performing a search.  It also allows control over access to the data and the aging policy of the data contained within.
+    </p>
+    <p>
+    Index names beginning with an underscore indicate "internal" indexes: indexes which contain information specific to the Splunk install itself, and generally intended for use by Splunk administrators.  You may or may not see or have access to these, depending on how your account role is set up.
+    </p>
+    <p>
+    We can see everything in an index by creating a search as simple as: <span class="ls_f">index=</span><span class="ls_v">&lt;index_name&gt;</span>, selecting an appropriate timeframe using the timepicker next to the search dialog, and submitting the job by clicking on the magnifying glass or hitting enter.  You may also use an asterick (*) as a wildcard in the index name, or use boolean terms (OR) to target multiple indexes within the same search.
+    </p>
+    <p>
+    Most searches won't look at an entire index.  We can utilize fields to get more specific with our searches.  Being specific causes searches to run more quickly and results to be more relevant to our needs.
+    </p>
+    <p>
+    Fields such as <span class="ls_f">_raw, _time, host, index, linecount, source, sourcetype, and splunk_server</span> should always be available to us.  Other fields can be "extracted" and will then be available to be used.  Splunk already understands the access_combined sourcetype and has done that work for us.
+    </p>
+    <p>
+    Splunk creates an "index" of all of the terms occuring in the <span class="ls_f">_raw</span> data in order to find relevant data quickly.  This isn't the same type of index that we've worked with so far -- this index is more similar to an index in a book than the folder concept previously discussed.  It's also not something that you need to work with directly.  Field values and terms are case insensitive -- no need to capitalize, though you may.  Field names are case sensitive -- they must be used in the same case as they are shown.
+    </p>
+    <p>
+    In addition to specifying things like the index name, sourcetype, source, host, and using raw terms, we have a number of other items we can include in our <b>base search</b>.  We can explicitly exclude terms or field values from our search results and use integer evaluation such as greater than and less than.
+    </p>
+    <p>
+    We can use an "OR" or "AND", though the AND is used automatically when terms occur next to each other (the AND is implied), but we can also use 
+    <span class="ls_bool">NOT</span> <span class="ls_f">host=</span><span class="ls_v">localhost*</span>
+    or an equivalent such as
+    <span class="ls_f">host!=</span><span class="ls_v">localhost*</span>
+    to e.g., avoid events where the localhost (either short or long name) provided the data.  
+    </p>
+    <p>
+    When we have a field with a numeric value we can use mathematical operators such as &gt;, &lt;, &gt;=, &lt;=, !=, e.g.
+    <span class="ls_f">linecount&gt;</span><span class="ls_v">1</span> to e.g., find events with more than one line.
+    </p>
+    <p>
+    First, let me define what some of those fields mean:
+      <ul class="ls_list">
+        <li><span class="ls_f">host</span> reflects the system which provided the data to Splunk</li>
+        <li><span class="ls_f">source</span> indicates the originating filename, network port, or script</li>
+        <li><span class="ls_f">sourcetype</span> is a name which groups data with the same format, but potentially different <b>sources</b> (e.g. different file paths, etc)
+        <li><b>_raw</b> is the actual event data as it was received</li>
+      </ul>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Example 5</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Ok, so let's try our first search!  This is a very basic, dense search to return all events contained within the timeframe selected, from the index you created in the first step.  Please ensure that you receive correct results back before continuing the tutorial.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker "Date Range" option to target the period "Between" Oct 1 and Oct 2 2016. You should have <b>81,757</b> results.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          Beyond just looking at an entire index, we can begin to use fields and terms to continue narrowing our result set to only those that we're concerned with.  It's always advisable to be as specific as possible with your search.  An index may have multiple types of data being written to it.  Specifying the <span clas="ls_f">sourcetype</span> name helps us ensure that we're working with our HTTP access logs.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype=</span><span class="ls_v">$stype$</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>
+            Use the time picker "Date &amp; Time Range" option to target only events "Before" Oct 3 2016 12:00:00.000.  You should have <b>102,194</b> results.
+            </li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Take note of some of the data in the <span class="ls_f">_raw</span> field in your search results.  All of the terms in these events have been indexed, allowing us to use them in our search.  Find something that looks interesting: a word, error code, IP address, etc.  The following example will show us HTTP POST events where the term "mozilla" does not exist (i.e. the user agent is not of a mozilla type).
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype=</span><span class="ls_v">$stype$</span>
+              POST
+              <span class="ls_bool">NOT</span>
+              mozilla
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>
+            Use the time picker "Date &amp; Time Range" option to target events "Between" Oct 1 2016 14:00 and 15:00.  You should have <b>3</b> results.
+            </li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          We can also use mathematical comparisons on fields.  Let's make sure that all of our events only have a single line -- this is an easy test to make sure that our data load worked out ok.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype=</span><span class="ls_v">$stype$</span>
+              <span class="ls_f">linecount</span>&gt;<span class="ls_v">1</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>
+            Use the time picker "Date Range" option to target all events during Oct 2016.  You should have <b>0</b> results.
+            </li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          When specifying IP addresses or other terms which contain "<a href="http://docs.splunk.com/Documentation/Splunk/latest/Data/Abouteventsegmentation" target="_blank">minor segmenters</a>" we can wrap the term in the <span class="ls_bool">TERM()</span> function to ensure that our search is as efficient as possible.  This isn't strictly necessary, but in larger data sets you'll find that it makes a big difference in how long the search takes to run.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype=</span><span class="ls_v">$stype$</span>
+              <span class="ls_bool">TERM(</span><span class="ls_v">2.71.196.131</span><span class="ls_bool">)</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>
+            Use the time picker "Date Range" option to target all events during Oct 2016.  You should have <b>945</b> results.
+            </li>
+          </ul>
+          <a href="tutorial_no_search?mod=$mod$&topic=2"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

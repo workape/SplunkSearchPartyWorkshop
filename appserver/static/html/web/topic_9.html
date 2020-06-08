@@ -1,0 +1,118 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Eventstats</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    When you use the e.g. <span class="ls_c">stats, timechart, top</span> commands, the left side expression (i.e. the left of the pipe symbol) is used to calculate results, but once that calculation is complete you no longer have access to data that wasn't captured during the e.g. <span class="ls_c">stats, timechart, top<span> execution.
+    </p>
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Eventstats" target="_blank">eventstats command</a> is a close cousin of <span class="ls_c">stats</span>, but with a very special difference: <span class="ls_c">eventstats</span> adds its calculations inline to each event, meaning that the previous result set remains fully intact, but is enriched with new data produced from <span class="ls_c">eventstats</span>.
+    </p>
+    <p>
+    A simple example of this would be a requirement to show the count of events per day, but also display the overall average number of events per day.  If we use a "... | timechart span=1d count" to get our daily count of events how can we then calculate the average over all days?  Can we just chain into a new command?  What if we chain to <span class="ls_c">stats</span>?  Would we then say "... | timechart span=1d count | stats avg(count)"?  You could do that, but the stats command is going to work against the <span class="ls_c">timechart</span> output and then get rid of everything but that final average.  If we wanted a chart that showed the count for each day with a line depicting the average over time we can no longer accomplish that.  This is a simple example case where <span class="ls_c">eventstats</span> comes into play.  It will retain our previous result set and create new fields with its results.
+    </p>
+    <p>
+    <span class="ls_c">eventstats</span> also allows for numerous subcommands such as <span class="ls_cfunc">count, avg(), max(), min(), stdev()</span>, etc.
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Let's start with the example discussed above.  If we'd ultimately like a chart which overlays the actual and average number of events or "hits" to our site, we can use a search such as the one below.  We make our call to <span class="ls_c">timechart</span> first, but want to perform more calculations from the counts that are calculated without losing the form of the results during the new operation.  The <span class="ls_c">eventstats</span> command is perfect for this.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_cfunc">count</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">eventstats</span>
+              <span class="ls_cfunc">avg</span>(count) as avg
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" time picker option to target Oct 1-8 2016.</li>
+            <li>Your results should include only the <span class="ls_f">_time, count, and avg</span> fields.</li>
+            <li>Try changing <span class="ls_c">eventstats</span> to <span class="ls_c">stats</span> to see the difference.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          Working from the previous example, if we'd like to instead just focus on "purchase" events (those where the url includes "action=purchase"), we can simply specify that in our base search, giving us a simple view of our customer purchase url hits in relation to the average in the timespan:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_change">
+                <span class="ls_f">action</span>=<span class="ls_base_v">purchase</span></span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_cfunc">count</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">eventstats</span>
+              <span class="ls_cfunc">avg</span>(count) as avg
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" time picker option to target Oct 1-8 2016.</li>
+            <li>Your results should include only the <span class="ls_f">_time, count, and avg</span> fields.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          We can take the previous search a bit farther.  What if we'd also like to see not just the average, but the maximum and minimum?
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_f">action</span>=<span class="ls_base_v">purchase</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">timechart</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_cfunc">count</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">eventstats</span>
+              <span class="ls_cfunc">avg</span>(count) as avg,
+              <span class="ls_change">
+                <span class="ls_cfunc">max</span>(count) as max,
+                <span class="ls_cfunc">min</span>(count) as min</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" time picker option to target Oct 1-8 2016.</li>
+            <li>Your results should include only the <span class="ls_f">_time, count, avg, max, and min</span> fields.</li>
+            <li>If you hover over the results table you'll notice a small menu pop-up at the bottom right corner.  Clicking on the magnifying glass icon will open your search in a new window.  Do so, and click on the "Visualization" tab to see your chart.</li>
+          </ul>
+          <a class="next" href="tutorial_with_search?mod=$mod$&topic=10"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

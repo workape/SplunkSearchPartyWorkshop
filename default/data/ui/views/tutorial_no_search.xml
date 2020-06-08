@@ -1,0 +1,9 @@
+<form stylesheet="css/search_party_workshop.css" script="js/search_party_workshop.js">
+  <label>Search Tutorial</label>
+  <row>
+    <panel>
+      <html id="toggle" src="html/toggle.html"/>
+      <html id="instructions" src="html/$mod$/topic_$topic$.html"/>
+    </panel>
+  </row>
+</form>

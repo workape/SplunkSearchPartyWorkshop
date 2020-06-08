@@ -1,0 +1,177 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Transaction</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Transaction" target="_blank">transaction command</a> offers one of many methods to group or "join" events by a common element.  Splunk users often gravitate to this command fairly early, but be warned that it should be used sparingly.  The nature of the command is such that it's often used somewhat incorrectly, and it's inherently inefficient in the way it works.  There are frequently better options to accomplish the same end, but the options available tend to differ depending on the use case.  The <span class="ls_c">transaction</span> command combines the relevant individual events into one single large event and also adds new fields to this event: <span class="ls_f">duration</span>, which is the amount of time between the first and last events of the transaction, and <span class="ls_f">eventcount</span> to indicate the number of events that makeup the new event.
+    </p>
+    <p>
+    A transaction is any group of conceptually-related events that spans time, such as a series of events related to the online reservation of a hotel room by a single customer, or a set of events related to a firewall intrusion incident. A transaction type is a configured transaction, saved as a field and used in conjunction with the transaction command. Any number of data sources can generate transactions over multiple log entries.
+    </p>
+    <p>
+    <span class="ls_c">transaction</span> also allows for numerous options such as: <span class="ls_copt">startswith</span> and <span class="ls_copt">endswith</span>, <span class="ls_copt">maxspan</span> and <span class="ls_copt">maxpause</span>, 
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <!--
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Example 5</a></li>
+        <li class="nav"><a href="#e6" data-toggle="tab">Example 6</a></li>
+        //-->
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Let's start out with a rather bad example.  I can use the very simple search below to join events based on a common <span class="ls_f">JSESSIONID</span> value.  This is generally only going to be useful if we perform further analysis on the transactions, but we've now completed a very dense search with no real specificity.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">transaction</span>
+              <span class="ls_f">JSESSIONID</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 13 2016.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          Similarly to <span class="ls_c">streamstats</span>, we can use the events to infer the amount of time a client remains on our website.  Because HTTP is not stateful, we can use some of our options available to define the boundaries of our transactions.  In this case, we'll consider related events as part of the current transaction as long as they occur within a 1 hour timeframe, and there is not a gap larger than 5 minutes between events.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_bool">TERM(</span><span class="ls_v">78.188.183.207</span><span class="ls_bool">)</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">transaction</span>
+              <span class="ls_f">clientip</span>
+              <span class="ls_copts">maxspan</span>=1h
+              <span class="ls_copts">maxpause</span>=5m
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 13 2016.</li>
+          </ul>
+          <a class="next" href="tutorial_with_search?mod=$mod$&topic=14"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Let's use our previous <span class="ls_c">eval</span> expression to convert bytes to mbytes and report on the total network utilization for each client.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+              <span class="ls_p">|</span>
+              <span class="ls_c">transaction</span>
+              <span class="ls_cfunc">sum(</span><span class="ls_f">mbytes</span><span class="ls_cfunc">)</span> as mbytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target Oct 24-25 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip</span> and <span class="ls_f">mbytes</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          Let's add the sparkline function to our previous example to get a visual representation of the data.  Sparklines are useful to easily see flat or spikey periods.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+              <span class="ls_p">|</span>
+              <span class="ls_c">transaction</span>
+              <span class="ls_change"><span class="ls_cfunc">sparkline</span></span>
+              <span class="ls_cfunc">sum(</span><span class="ls_f">mbytes</span><span class="ls_cfunc">)</span> as mbytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target Oct 24-25 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip, sparkline, and mbytes</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          If you were interested in seeing the unique list of products that each customer checked out you can use the <span class="ls_cfunc">values()</span> function:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">transaction</span>
+              <span class="ls_cfunc">values(</span><span class="ls_f">itemId</span><span class="ls_cfunc">)</span> as products
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 23 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip</span> and <span class="ls_f">products</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e6">
+          <p>
+          Here's an example of <span class="ls_c">transaction</span> pretending to be the <span class="ls_c">timechart</span> command.  Let's say we'd like a report of the distinct client IPs over the course of each day.  We could use the <span class="ls_c">timechart</span> command, or we could employ the <span class="ls_c">bin</span> and <span class="ls_c">transaction</span> commands together.  The <span class="ls_c">bin</span> command allows us to specify that we want to group the time values by 1 day or 1 minute or 1 week, etc. It gives us the opportunity to use the <span class="ls_copts">span</span> argument even though <span class="ls_c">transaction</span> doesn't support it itself.  In this case we want a report on a per-day basis, so we'll use 1 day.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">bin</span>
+              <span class="ls_f">_time</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_p">|</span>
+              <span class="ls_c">transaction</span>
+              <span class="ls_cfunc">distinct_count(</span><span class="ls_f">clientip</span><span class="ls_cfunc">)</span> as distinct_clients
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">_time</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should only include <span class="ls_f">_time</span> and <span class="ls_f">distinct_clients</span>.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,199 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Lookups</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    A sample lookup is needed to work through the examples.  Please download the http_status.csv file which can be located under the <b>Basic HTTP Server Access Logs</b> folder at the following url: <a target="_blank" href="https://splk.it/spwdata">https://splk.it/spwdata</a>
+    </p>
+    <p>
+     <span class="ls_f">Lookups</span> enable you to enrich and extend the usefulness of your event data through interactions with external resources.  In other words, it makes the ugly machine data such as user ID, building ID, and longitude and latitude coordinates, much more understandable by including more relatable things alongside them, such as a user’s first and last name, department name, building name, city, state, etc…    </p>
+    <p>
+    Lookup tables use information in your events to determine how to add other fields from external data sources such as static tables (CSV files), Python- and binary-based scripts, and App Key Value Store (KV Store) collections. 
+    </p>
+    <p>
+    An example of this functionality would be a CSV lookup that takes the http <span class="ls_f">status</span> value in an event, matches that value with its definition in a CSV file, and then adds that definition to the event as the values of new <span class="ls_f">status_description and status_type</span> fields. So, if you have an event where http_status = 503, the lookup would add status_description = Service Unavailable, and status_type = Server Error to that event.
+    </p>
+    <p>
+    Of course, there are more advanced ways to work with lookups. For example, you can:
+    </p>
+    <ul class="ls_list">
+            <li>Arrange to have a static lookup table be populated by the results of a report.</li>
+            <li>Define a field lookup that is based on an external Python script rather than a lookup table. For example, you could create a lookup that uses a Python script that returns an IP address when given a host name, and returns a host name when given an IP address.</li>
+            <li>Create a time-based lookup, if you are working with a lookup table that includes a field value that represents time. For example, this could come in handy if you need to use DHCP logs to identify users on your network based on their IP address and the event timestamp.</li>
+    </ul>
+    <p>
+    In our exercise however, we will be enriching the HTTP Server Access logs, by using the http <span class="ls_f">status</span> value to get the <span class="ls_f">status_description</span> as mentioned above.
+    </p>
+    <p>
+    To do this, we will create the lookup in 6 steps:
+    </p>
+    <ol class="ls_list">
+            <li>Load the CSV lookup table file into Splunk.</li>
+            <li>Verify that the lookup was loaded successfully.</li>
+            <li>Configure the lookup definition that maps the existing http status field in the event to the http_status field in the lookup table file.</li>
+            <li>Invoke the lookup manually in a search to test it.</li>
+            <li>Configure the lookup to run automatically.</li>
+            <li>Validate that the automatic lookup was created successfully.</li>
+    </ol>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">1. Load CSV Lookup</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">2. Verify Lookup</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">3. Configure Lookup Definition</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">4. Invoke Lookup Manually</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">5. Configure Automatic Lookup</a></li>
+        <li class="nav"><a href="#e6" data-toggle="tab">6. Validate Automatic Lookup</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          <ul class="ls_list">
+            <li>Download the aforementioned sample lookup and save it to a known location of your choosing</li>
+	    <li>At the top of the screen, navigate to <i>Settings</i> then click <i>Lookups</i>
+            <li>Select the "Add new" action located to the right of the "Lookup table files"</li>
+            <li>Make sure the "Destination app" is the <b>search_party_workshop</b></li>
+            <li>Select "Choose File"</li>
+            <li>"Browse" to the sample lookup's location</li>
+            <li>Select the <b>http_status.csv</b> file</li>
+            <li>In the "Destination filename" box, type <b>http_status.csv</b> (Note: It must have .csv file extension)</li>
+            <li>Click the “Save” button.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          <ul class="ls_list">
+            <li>Go to the search bar by first selecting "Apps" -> "Search Party Workshop" <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/go_spw.png" width="35%"/><br/><br/></li>
+            <li>Then select "Search", which is located on the upper left side just next to "Start Here". <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/ss.png" width="25%"/></li>
+          </ul>
+          </p>
+          <ul class="ls_list">
+            <li>Type the following in the search bar:</li>
+            <li>Notice here that the pipe ("|") symbol is the first character of this search.  This is because <span class="ls_c">inputlookup</span> is a "generating" search command, meaning that it doesn't depend on a search to occur in order to perform its function (which is to simply show us the contents of the http_status.csv lookup file).
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_p">|</span>
+              <span class="ls_c">inputlookup</span>
+              <span class="ls_base_v">http_status.csv</span>
+            </span>
+          </p>
+          <p>
+          <ul class="ls_list">
+            <li>You should see a statistics table with 3 columns of data: <span class="ls_f">status, status_description, and status_type</span></li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>  
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          <ul class="ls_list">
+            <li>Go back to the Lookups Settings area by selecting "Settings" -> "Lookups" in the upper right corner <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/go_lookups.png" width="75%"/><br/><br/></li>
+            <li>Select the "Add new" action, located to the right of the "Lookup definitions"</li>
+            <li>Make sure the "Destination app" is the <span class="ls_f">search_party_workshop</span></li>
+            <li>In the "Name" box, type <span class="ls_f">http_status</span></li>
+            <li>Make sure the "Type" is <span class="ls_f">File-based</span></li>
+            <li>Make sure the "Lookup file" is <span class="ls_f">http_status.csv</span></li>
+            <li>Click the “Save” button</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+	</div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          <ul class="ls_list">
+             <li>Go to the search bar by first selecting "Apps" -> "Search Party Workshop" <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/go_spw2.png" width="35%"/><br/><br/></li>
+            <li>Then select "Search", which is located on the upper left side just next to "Start Here". <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/ss.png" width="25%"/></li>
+          </ul>
+          </p>
+          <ul class="ls_list">
+            <li>Using a timeframe of October 1, 2016, type the following in the search bar:</li>
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">lookup</span>
+              <span class="ls_f">http_status</span>
+              <span class="ls_base_v">status</span>
+              <span class="ls_f">OUTPUT</span>
+              <span class="ls_base_v">status_description</span>
+            </span>
+          </p>
+          <p>
+          <ul class="ls_list">
+            <li>If the manual lookup worked, you will see a new field called <span class="ls_f">status_description</span> under the interesting fields on the left hand side.<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/status_desc.png" width="50%"/><br/><br/></li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>  
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          <ul class="ls_list">
+            <li>Go back to the Lookups Settings area by selecting "Settings" -> "Lookups" in the upper right corner <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/go_lookups2.png" width="75%"/><br/><br/></li>
+            <li>Select the "Add new" action, located to the right of the "Automatic lookups"</li>
+            <li>Make sure the "Destination app" is the <span class="ls_f">search_party_workshop</span></li>
+            <li>In the "Name" box, type <span class="ls_f">http_status</span> (Note: The name cannot have spaces)</li>
+            <li>Make sure the "Lookup table" is <span class="ls_f">http_status</span></li>
+            <li>Make sure “Apply to” is set to <span class="ls_f">sourcetype</span>, and in the “named” box you type <span class="ls_f">access_combined</span>. (Make sure you spell access_combined correctly !!)</li>            
+            <li>In the <span class="ls_f">LEFT</span> Lookup input fields box, type <span class="ls_f">status</span> . Nothing should be entered on the right side of the equal (=) sign.   By default, Splunk looks for a field with that same name in the event to match with. If the event field name is different, you would enter it on the right-hand side.</li>
+            <li>In the <span class="ls_f">LEFT</span> Lookup output fields box, type <span class="ls_f">status_description</span> . Nothing should be entered on the right side of the equal (=) sign.  By default, Splunk uses the field in the lookup entry to copy into each matching event.  If you want the name of the field to be different, you would enter it on the right-hand side.</li> 
+            <li>Click the “Save button”</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+        
+        <div class="tab-pane fade" id="e6">
+          <p>
+          <ul class="ls_list">
+            <li>Go to the search bar by first selecting "Apps" -> "Search Party Workshop" <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/go_spw3.png" width="35%"/><br/><br/></li>
+            <li>Then select "Search", which is located on the upper left side just next to "Start Here". <br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/ss.png" width="25%"/></li>
+          </ul>
+          </p>
+          <ul class="ls_list">
+            <li>Using a timeframe of October 1, 2016, type the following in the search bar:</li>
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+            </span>
+          </p> 
+         <p>
+          <ul class="ls_list">
+            <li>If the automatic lookup worked, you will see a new field called <span class="ls_f">status_description</span> under the interesting fields on the left hand side.<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/status_desc.png" width="50%"/><br/><br/></li>
+          </ul>
+          <a href="tutorial_no_search?mod=$mod$&topic=17"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>   
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="action_frame">
+  <iframe src="/manager/search_party_workshop/lookups?input_mode=1&hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>

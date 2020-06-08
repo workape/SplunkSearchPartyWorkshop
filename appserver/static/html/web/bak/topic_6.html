@@ -1,0 +1,132 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Eval</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Eval" target="_blank">eval command</a> allows you to perform a wide array of operations against individual events.  A common example would be a field such as our <span class="ls_f">bytes</span> where we might want to calculate the KB or GB value of the bytes.  However, eval will also allow us to perform conditional tests, value conversions and numerous other items.  This is a seriously useful search command!
+    </p>
+    <p>
+    The <span class="ls_c">eval</span> command has far too many options to explore thoroughly in this tutorial, so please check out the documentation for a full list of the various functions and operators that it supports.  Eval is essentially its own little programming language, acting against each event as they're returned.
+    </p>
+    <p>
+    We'll use the eval command in other places throughout the tutorial and in other contexts, so keep an eye out!  In addition to being a great search command you can also save these expressions to "<a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/definecalcfields">Calculated Fields</a>". We have an exercise for you on Calculated Fields later in the tutorial.  Doing so binds the eval expression to (generally) the sourcetype so that every search issued against the sourcetype will automatically execute the eval statement.  That can be very useful to simplify your searches, but it's important to take advantage of such features only when the eval is so common in its usefulness that it offsets the fact that every unit of work that Splunk has to perform, no matter how quickly, does use system resources.  It would be silly to have a calculated field set for something that is only used a small percentage of the time, so use this appropriately.  There are other features of Splunk that would allow for such expressions to be easily reused in searches.
+    </p>
+    <p>Example Event:<br/>
+    <code>62.148.178.74 - - [26/Oct/2016 17:42:44:039637] "GET /oldlink?item_id=MCB-6&JSESSIONID=SD2SCL7FF3ADFF4 HTTP 1.1" 200 1782 "http://shop.acme.com/oldlink?item_id=MCB-6" "mozilla/5.0 (Linux; U; Android 2.3.3; en-us; GT-I9100 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1" 311</code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          During our discussion of <span class="ls_c">timechart</span> we used a base search to target only our "bad" HTTP status codes (status codes which are in the 400 and 500s).  We could actually use eval to categorize these as well.  Below we use an eval "if" statement to create a new field called <span class="ls_f">status_category</span> which contains a value of "ok" if the status is less than 400, or "bad" if not (i.e. if it's equal or greater).  This happens for each event returned from the previous section of the search or the base search in this case.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">status_category</span>=<span class="ls_cfunc">if(</span><span class="ls_f">status</span>&lt;400, "ok", "bad"<span class="ls_cfunc">)</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 24 2016.</li>
+            <li>Take a look at the resulting fields and you should find your new status_category.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          If you'd like to convert bytes to mbytes for reporting on network utilization you might use eval like this: 
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 24 2016.</li>
+            <li>Take a look at the resulting fields and you should find your new mbytes.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          We can also manipulate strings using eval.  Maybe we'd like to provide a description of the activity taking place in the web request.  The "." is a "concatenate" operator, telling eval that we want to join the strings together using the field values.  In fact, let's also use the <span class="ls_c">table</span> command to simplify our output!
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_change">
+                <span class="ls_f">itemId</span>=<span class="ls_base_v">*</span></span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">event_description</span>=<span class="ls_f">clientip</span>
+              . " made a " .
+              <span class="ls_f">action</span>
+              . " on item " .
+              <span class="ls_f">itemId</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">table</span>
+              <span class="ls_f">event_description</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 24 2016.</li>
+            <li>Results should only include <span class="ls_f">event_description</span>.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          There are so many unique values of <span class="ls_f">useragents</span> in this data.  If we'd like to do a quick categorization of them we could use something like this:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_change">
+                <span class="ls_f">itemId</span>=<span class="ls_base_v">*</span></span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">agent_category</span> =
+              <span class="ls_cfunc">case</span>(
+              <span class="ls_f">useragent</span>
+              <span class="ls_bool">LIKE</span> "%Android%", "Android",
+              <span class="ls_f">useragent</span>
+              <span class="ls_bool">LIKE</span> "%iPhone%", "iOS",
+              <span class="ls_f">useragent</span>
+              <span class="ls_bool">LIKE</span> "%iPad%", "iOS",
+              <span class="ls_cfunc">true</span>(), "Other")
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 24 2016.</li>
+          </ul>
+          <a href="tutorial_with_search?mod=$mod$&topic=8"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

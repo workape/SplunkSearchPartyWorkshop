@@ -1,0 +1,189 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Iplocation, Geostats, Geom</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    Given the public IP addresses that are frequently available in a dataset such as this, it can often be useful to resolve IP space to its assigned geographic area. The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Iplocation" target="_blank">iplocation command</a> performs a backend query to a 3rd party database to retrieve location information.  Simply pass the field name containing the public IP, and new fields will be created for each event containing <span class="ls_f">lat</span>itude, <span class="ls_f">lon</span>gitude, <span class="ls_f">City</span>, <span class="ls_f">Country</span>, and <span class="ls_f">Region</span>.  In particular, the <span class="ls_f">lat</span> and <span class="ls_f">lon</span> field information can then be visualized on a map.
+    </p>
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Geostats" target="_blank">geostats command</a> generates statistics to display the location data on a map.  This command is again, somewhat similar to <span class="ls_c">stats</span>, but maintains the location information implicitly.  It has a number of functions available to count, average, etc.  After calling <span class="ls_c">iplocation</span>, you may follow up with the <span class="ls_c">geostats</span> command (as opposed to <span class="ls_c">stats</span>) in order to perform the types of statistical calculations that would be necessary to depict on a map as, e.g. a pie chart.  It's not required to call <span class="ls_c">iplocation</span> prior to <span class="ls_c">geostats</span>.  If your data happens to have latitude and longitude included, or if it can be inferred based on other data within the event (at which point <a href="https://docs.splunk.com/Documentation/Splunk/latest/Knowledge/Addfieldsfromexternaldatasources" target="_blank">Splunk lookups</a> can be used to enrich the events), then we can just pass those results to <span class="ls_c">geostats</span>.
+    </p>
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Geom" target="_blank">geom command</a> helps us to work with what are known as "Choropleth" maps.  These are maps which have entire areas or regions being shown with coloration to indicate the numeric value it represents, e.g. the count of purchase actions.  The <span class="ls_c">geom</span> command gathers the necessary information to represent the geometry of the region in question from kmz (Keyhold Markup) files.  You may add new kmz files in order to provide new polygon/area information, but that's an advanced topic.
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <!--
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Example 5</a></li>
+        <li class="nav"><a href="#e6" data-toggle="tab">Example 6</a></li>
+        //-->
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Let's start out by using iplocation on its own.  Enter the search below and look out for the <span class="ls_f">lat</span>, <span class="ls_f">lon</span>, <span class="ls_f">City</span>, <span class="ls_f">Country</span>, and <span class="ls_f">Region</span> fields in your output
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">iplocation</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 13 2016 09:00-17:00.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          If we take our previous example one step further, using the raw data to generate statistical output that is chartable, we're a quick step away from crafting output for a map.  The example below would help gain insight into what products are popular throughout the world.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">iplocation</span>
+              <span class="ls_f">clientip</span>
+              <span class="ls_change">
+                <span class="ls_p">|</span>
+                <span class="ls_c">geostats</span>
+                <span class="ls_cfunc">count</span>
+                <span class="ls_cparams">by</span>
+                <span class="ls_f">itemId</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 13 2016 09:00-17:00.</li>
+            <li>Click the magnifying glass in the pop-up menu at the bottom of your result set to open the search in a new window and choose a map visualization</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Next we'll use <span class="ls_c">geom</span>.  To do so, we also need to report differently.  We'll need to use <span class="ls_c">stats</span> again, but create our statistical calculations by <span class="ls_f">Region</span>, or whatever the scale is intended to be.  In this case the <span class="ls_f">Region</span> field contains our U.S. state names and would be the field that we'd want to split by.  Additionally, we want to use the <span class="ls_copts">featureIdField</span> to let Splunk know that's where the relevant values are for plotting.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">iplocation</span>
+              <span class="ls_f">clientip</span>
+              <span class="ls_p">|</span>
+              <span class="ls_change">
+                <span class="ls_c">stats</span>
+              </span>
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_change">
+                <span class="ls_f">Region</span>
+                <span class="ls_p">|</span>
+                <span class="ls_c">geom</span> geo_us_states
+                <span class="ls_copts">featureIdField</span>="Region"
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 13 2016 09:00-17:00.</li>
+          </ul>
+          <a href="tutorial_no_search?mod=$mod$&topic=16"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          Let's add the sparkline function to our previous example to get a visual representation of the data.  Sparklines are useful to easily see flat or spikey periods.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+              <span class="ls_p">|</span>
+              <span class="ls_c">iplocation</span>
+              <span class="ls_change"><span class="ls_cfunc">sparkline</span></span>
+              <span class="ls_cfunc">sum(</span><span class="ls_f">mbytes</span><span class="ls_cfunc">)</span> as mbytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target Oct 24-25 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip, sparkline, and mbytes</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          If you were interested in seeing the unique list of products that each customer checked out you can use the <span class="ls_cfunc">values()</span> function:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">iplocation</span>
+              <span class="ls_cfunc">values(</span><span class="ls_f">itemId</span><span class="ls_cfunc">)</span> as products
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 23 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip</span> and <span class="ls_f">products</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e6">
+          <p>
+          Here's an example of <span class="ls_c">iplocation</span> pretending to be the <span class="ls_c">timechart</span> command.  Let's say we'd like a report of the distinct client IPs over the course of each day.  We could use the <span class="ls_c">timechart</span> command, or we could employ the <span class="ls_c">bin</span> and <span class="ls_c">iplocation</span> commands together.  The <span class="ls_c">bin</span> command allows us to specify that we want to group the time values by 1 day or 1 minute or 1 week, etc. It gives us the opportunity to use the <span class="ls_copts">span</span> argument even though <span class="ls_c">iplocation</span> doesn't support it itself.  In this case we want a report on a per-day basis, so we'll use 1 day.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">bin</span>
+              <span class="ls_f">_time</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_p">|</span>
+              <span class="ls_c">iplocation</span>
+              <span class="ls_cfunc">distinct_count(</span><span class="ls_f">clientip</span><span class="ls_cfunc">)</span> as distinct_clients
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">_time</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should only include <span class="ls_f">_time</span> and <span class="ls_f">distinct_clients</span>.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

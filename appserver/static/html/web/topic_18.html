@@ -1,0 +1,121 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Event Types</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    <span class="ls_f">Event types</span> are a categorization system to help you make sense of your data. Event types let you sift through huge amounts of data, find similar patterns, and create alerts and reports. Every event that can be returned by a search, gets an association with that event type. 
+    </p>
+    <p>
+	For example, say you have this search: 
+	</p>
+    <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">access_combined</span> 
+              <span class="ls_f">status</span>=<span class="ls_base_v">200</span> 
+            </span>
+          </p>
+
+    <p>
+   If you save that search as an event type named <span class="ls_f">successful_purchase</span>, any event that can be returned by that search gets <span class="ls_f">eventtype=successful_purchase</span> added to it at search time. This happens even if you are searching for something completely different.
+    </p>
+    <p>
+    <span class="ls_c">We are going to build an event type using our web access logs events.</span>
+    </p>
+    <p>
+    As part of the search we will build, we will be using another default field called <span class="ls_c">punct</span>. The <span class="ls_c">punct</span> field is a collection of all the punctuation marks extracted from the event, concatenated together. The punctuation pattern is unique to types of events. It is a great way to look for the most common or the most rare kinds of events based on the pattern of their punctuation.
+    </p>
+    
+
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">1. Grab Punct Field</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">2. Create Search</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">3. Create Event Type</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">4. Test Event Type</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          <ul class="ls_list">
+            <li>Click the <span class="ls_f">punct</span> field under interesting fields along the left-hand side</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/punct_select.png" width="75%"/><br/><br/></li>
+            <li>Highlight and copy one of the <span class="ls_f">punct</span> values from the "Top 10 Values" list on the right-hand side. We will be using this value in the next step.</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/punct_highlight.png" width="75%"/><br/><br/></li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+
+          
+
+
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          <ul class="ls_list">
+            <li>Create and run the following search, which includes the punct you selected, but wildcard it after the timestamp:</li>
+            <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">access_combined</span> 
+              <span class="ls_f">punct</span>=<span class="ls_base_v">"..._-_-_[//_:::]*"</span> 
+              <span class="ls_bool">NOT</span>
+              <span class="ls_f">status</span>=<span class="ls_base_v">200</span>
+            </span>
+          </p>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          <ul class="ls_list">
+            <li>Click “Save As” <span class="ls_f">Event Type</span></br>
+            <img src="/static/app/search_party_workshop/images/$mod$/eventtype_save.png" width="75%"/><br/><br/></li>
+            <li>In the “Name” box, type  <span class="ls_f">bad</span></li>
+            <li>In the “Color" dropdown, select  <span class="ls_f">red</span></li>
+            <li>In the "Priority" dropdown, select <span class="ls_f">1 (Highest)</span></li>
+            <li>Click the “Save” button</li>
+            <li>Click the "Done" button</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          <ul class="ls_list">
+            <li>Create and run the following Search:</li>
+	    <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_v">$idx$</span>
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">access_combined</span>
+            </span>
+            </p>
+            <li>To search on just the “bad” events, type in the search bar:<br/>
+            <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">eventtype</span>=<span class="ls_base_v">bad</span> 
+            </span>
+            </p>
+          </ul>
+          <a href="tutorial_no_search?mod=$mod$&topic=19"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="action_frame">
+  <iframe src="/app/search_party_workshop/search?earliest=&latest=1475380800&q=search%20index%3D$idx$%20sourcetype%3D$stype$%20&display.page.search.mode=verbose&dispatch.sample_ratio=1&hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>

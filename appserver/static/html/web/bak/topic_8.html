@@ -1,0 +1,185 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Stats</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Stats" target="_blank">stats command</a>, much like <span class="ls_c">eval</span>, is a very useful and powerful search command.  Whereas <span class="ls_c">eval</span> is used to create new fields in events using various forms of logic and expressions, <span class="ls_c">stats</span> calculates statistics on fields within your events.  This is also what <span class="ls_c">timechart, top, rare, etc</span> do, though they do it in a very defined context.  <span class="ls_c">stats</span> is much more flexible in its use.  In fact, <span class="ls_c">stats</span> can be used to achieve very similar results to those other search commands.  It's truly the swiss army knife of search commands. 
+    </p>
+    <p>
+    <span class="ls_c">stats</span> is another command which allows for numerous subcommands or "evaluation expressions" such as <span class="ls_cfunc">count, avg(), max(), min(), stdev()</span>, as well as <span class="ls_cfunc">sparkline</span> to create small histograms within tabular output.
+    </p>
+    <p>
+    In addition to introducing <span class="ls_c">stats</span> we'll also introduce the <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Bin" target="_blank">bin/bucket command</a>.  This command allows us to group events into discrete sets by adjusting the field value.  For example, we can group events by <span class="ls_f">_time</span>, but generalize the value to 15 minute groups, or 1 hour, etc.
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Example 5</a></li>
+        <li class="nav"><a href="#e6" data-toggle="tab">Example 6</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Let's start out by using stats to give similar output to <span class="ls_c">top</span>.  We won't encounter the same default of 10 results here.  A search such as this is useful in seeing how many "hits" each item has received in the timespan.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">itemId</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Your results should include only the <span class="ls_f">itemId and count</span> fields.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          We can split "by" as many fields as we'd like when using <span class="ls_c">stats</span> because it's not constrained to providing a single output format (because it's not explicitly focused on conforming to a certain style of visualization(s)).
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">itemId</span>,
+              <span class="ls_change">
+                <span class="ls_f">status</span>,
+                <span class="ls_f">action</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Your results should include only the <span class="ls_f">itemId, status, action, and count</span> fields.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Let's use our previous <span class="ls_c">eval</span> expression to convert bytes to mbytes and report on the total network utilization for each client.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">sum(</span><span class="ls_f">mbytes</span><span class="ls_cfunc">)</span> as mbytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target Oct 24-25 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip</span> and <span class="ls_f">mbytes</span>.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          Let's add the sparkline function to our previous example to get a visual representation of the data.  Sparklines are useful to easily see flat or spikey periods.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_change"><span class="ls_cfunc">sparkline</span></span>
+              <span class="ls_cfunc">sum(</span><span class="ls_f">mbytes</span><span class="ls_cfunc">)</span> as mbytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target Oct 24-25 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip, sparkline, and mbytes</span>.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          If you were interested in seeing the unique list of products that each customer checked out you can use the <span class="ls_cfunc">values()</span> function:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">values(</span><span class="ls_f">itemId</span><span class="ls_cfunc">)</span> as products
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 23 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip</span> and <span class="ls_f">products</span>.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e6">
+          <p>
+          Here's an example of <span class="ls_c">stats</span> pretending to be the <span class="ls_c">timechart</span> command.  Let's say we'd like a report of the distinct client IPs over the course of each day.  We could use the <span class="ls_c">timechart</span> command, or we could employ the <span class="ls_c">bin</span> and <span class="ls_c">stats</span> commands together.  The <span class="ls_c">bin</span> command allows us to specify that we want to group the time values by 1 day or 1 minute or 1 week, etc. It gives us the opportunity to use the <span class="ls_copts">span</span> argument even though <span class="ls_c">stats</span> doesn't support it itself.  In this case we want a report on a per-day basis, so we'll use 1 day.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">bin</span>
+              <span class="ls_f">_time</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">distinct_count(</span><span class="ls_f">clientip</span><span class="ls_cfunc">)</span> as distinct_clients
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">_time</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should only include <span class="ls_f">_time</span> and <span class="ls_f">distinct_clients</span>.</li>
+          </ul>
+          <a href="tutorial_with_search?mod=$mod$&topic=10"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

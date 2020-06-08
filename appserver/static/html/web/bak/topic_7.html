@@ -1,0 +1,123 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Top and Rare</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Top" target="_blank">top</a> and
+    <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Rare" target="_blank">rare</a> commands each work very similarly, so we'll cover these together.  <span class="ls_c">top</span> will yield the <i>n</i> number of most common values of a field, while rare yields the <i>n</i> least common.  The output format of these commands is designed to create visualizations via pie or bar charts, but as with all of these commands, will be displayed in tabular format as well.
+    </p>
+    <p>
+    The <span class="ls_c">top</span> and <span class="ls_c">rare</span> commands, similar to <span class="ls_c">timechart</span>, allow you to split "by" fields, and will automatically (unless you specify not to) display the percentage as well as the count.
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Like <span class="ls_c">timechart</span>, <span class="ls_c">top</span> and <span class="ls_c">rare</span> will default to the top 10 results.  You can use the <span class="ls_copts">limit</span> argument to change this value.  Below we'll have <span class="ls_c">top</span> calculate which items have the most events.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">top</span>
+              <span class="ls_f">itemId</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Your results should include only the <span class="ls_f">itemId, count, and percent</span> fields.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          We can split "by" fields as well in order to see the overall counts split out by the associated <span class="ls_f">action</span>.  In addition we'll omit the "percent" column.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">top</span>
+              <span class="ls_f">itemId</span>
+              <span class="ls_change">
+                <span class="ls_cparams">by</span>
+                <span class="ls_f">action</span>
+                <span class="ls_copts">showperc</span>=f
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 23 2016.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Consider that you might be interested in reporting on useragents connecting to your website in order to ensure that you're testing against the right browsers and browser versions.  You only have so much time and budget and want to be sure that you account for the most common browsers and versions.  We can very easily use <span class="ls_c">top</span> to get the most common.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">top</span>
+              <span class="ls_change">
+                <span class="ls_f">useragent</span>
+                <span class="ls_copts">showperc</span>=f
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 23 2016.</li>
+            <li>Results should only include <span class="ls_f">useragent</span> and <span class="ls_f">count</span>.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          Similarly, we may want to keep an eye on new browsers or rare useragents that may indicate web scanning or other potentially notable activity.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_change">
+                <span class="ls_c">rare</span></span>
+              <span class="ls_f">useragent</span>
+              <span class="ls_copts">showperc</span>=f
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 23 2016.</li>
+            <li>Results should only include <span class="ls_f">useragent</span> and <span class="ls_f">count</span>.</li>
+          </ul>
+          <a href="tutorial_with_search?mod=$mod$&topic=9"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

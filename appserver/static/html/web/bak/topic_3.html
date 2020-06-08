@@ -1,0 +1,38 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Search View</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    Congratulations, you've extracted a field!  You could have selected multiple terms and extractions in the previous workflow, but fortunately Splunk already understands "access_combined" log formats and has fields available for us.
+    </p>
+    <p>
+    Below you'll see what's known as the Search view.  You should familiarize yourself with this view.  It's generally located by the "Search" link within the navigation menu toward the top left of this page, but has been placed inline for your convenience.  This view is where most of your "ad hoc" searching, or search development will take place.
+    </p>
+    <p>
+    A search has been issued for you.  If you're following along with different index names you'll need to change as appropriate.
+    </p>
+    <p>
+    </p>
+  </div>
+  <div id="ls_action">
+    <p>
+    Familiarize yourself with this view. The major components are:
+      <ul class="ls_list">
+        <li><b>Search bar and Timepicker</b> The place to input search terms and select your search timeframe.  You should always try to be as specific as possible with respect to both of these factors.
+        <li><b>Events, Patterns, Statistics, and Visualization tabs</b> Each tab will change the data view.  The Events tab shows your raw search results.  The Patterns tab shows the command patterns of the events.  Statistics and Visualization will show tabular or graphical representation of the data when using a proper search command.</li>
+        <li><b>Timeline</b> A visual representation of the count of results at the time of the events.</li>
+        <li><b>Fields</b> Selected and most common field names are shown along the left side of the screen.  Review the fields listed and click on a few.</li>
+        <li><b>Events</b> The actual events that were sent to Splunk.  You may click the "<b>&gt;</b>" to the left of an event to see the extracted fields specific to it.</li>
+      </ul>
+    </p>
+    <p>
+    Once you've completed this, click <a href="tutorial_with_search?mod=$mod$&topic=5"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>.
+    </p>
+  </div>
+</div>
+<div id="action_frame">
+  <iframe src="/app/search_party_workshop/search?earliest=&latest=1475380800&q=search%20index%3D$idx$%20sourcetype%3D$stype$%20&display.page.search.mode=verbose&dispatch.sample_ratio=1&hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>

@@ -1,0 +1,206 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Sort, Head, Tail</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Sort" target="_blank">sort command</a>,
+    <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Head" target="_blank">head command</a>, and
+    <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Tail" target="_blank">tail command</a> are frequently used, and generally very simple to understand.  <span class="ls_c">sort</span> allows us to sort columnar output by numeric/lexicographic order.  <span class="ls_c">head</span> and <span class="ls_c">tail</span> instruct Splunk to only return the first or last <i>n</i> number of results.
+
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Example 5</a></li>
+        <li class="nav"><a href="#e6" data-toggle="tab">Example 6</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          We can use <span class="ls_c">sort</span> against field names to instruct that we'd like the results to be sorted either ascending or descending (where descending is indicated by a preceding "-" dash).  The example below will return results ordered by the <span class="ls_f">clientip</span> field values.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">sort</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 21 2016.</li>
+            <li>Locate the <span class="ls_f">clientip</span> column in the table and verify that it's sorted correctly</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          In this example, we'll use <span class="ls_c">stats</span> to count events grouped by <span class="ls_f">clientip</span> and <span class="ls_f">method</span>, and then sorted with the <span class="ls_f">clientip</span> ascending, <span class="ls_f">method</span> descending, and <span class="ls_f">count</span> descending.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_change">
+                <span class="ls_c">stats</span>
+                <span class="ls_cfunc">count</span>
+                <span class="ls_cparams">by</span>
+                <span class="ls_f">clientip</span>,
+                <span class="ls_f">method</span>
+              </span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">sort</span>
+              <span class="ls_change">
+                <span class="ls_f">clientip</span>,
+                -<span class="ls_f">method</span>,
+                -<span class="ls_f">count</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 21 2016.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Using <span class="ls_c">head</span> will give us the "top" <i>N</i> events as they're sorted.  The search below is similar to the results of the <span class="ls_c">top<span> command.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>,
+              <span class="ls_f">method</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">sort</span>
+              <span class="ls_f">clientip</span>,
+              -<span class="ls_f">method</span>,
+              -<span class="ls_f">count</span>
+              <span class="ls_change">
+                <span class="ls_p">|</span>
+                <span class="ls_c">head 10</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 21 2016.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          We could accomplish the same without the <span class="ls_c">head</span> command, by telling <span class="ls_c">sort</span> to only return the first <i>n</i> results.
+         </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>,
+              <span class="ls_f">method</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">sort</span>
+              <span class="ls_change">10</span>
+              <span class="ls_f">clientip</span>,
+              -<span class="ls_f">method</span>,
+              -<span class="ls_f">count</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 21 2016.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          Using <span class="ls_c">tail</span> will give us the "bottom" <i>N</i> events as they're sorted.  The search below is similar to the results of the <span class="ls_c">rare<span> command.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>,
+              <span class="ls_f">method</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">sort</span>
+              <span class="ls_f">clientip</span>,
+              -<span class="ls_f">method</span>,
+              -<span class="ls_f">count</span>
+              <span class="ls_change">
+                <span class="ls_p">|</span>
+                <span class="ls_c">tail 10</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 21 2016.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e6">
+          <p>
+          We could accomplish the same without the <span class="ls_c">tail</span> command, by <span class="ls_c">sort</span> to only return the first <i>n</i> results, but we'll also want to reverse the output order of sort.
+         </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">stats</span>
+              <span class="ls_cfunc">count</span>
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>,
+              <span class="ls_f">method</span>
+              <span class="ls_p">|</span>
+              <span class="ls_c">sort</span>
+              <span class="ls_change">10</span>
+              <span class="ls_change">
+                -<span class="ls_f">clientip</span>,
+                <span class="ls_f">method</span>,
+                <span class="ls_f">count</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target Oct 21 2016.</li>
+          </ul>
+          <a class="next" href="tutorial_with_search?mod=$mod$&topic=15"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Field Aliases</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    In your data, you might have groups of events with related field values. To help you search for these groups of fields, you can assign <span class="ls_f">field aliases</span> to their field values. 
+    </p>
+    <p>
+    Field aliases are an alternate name that you assign to a field, allowing you to use that name to search for events that contain that field. A field can have multiple aliases, and a single alias can apply to multiple fields. An alias does not replace or remove the original field name.
+	</p>
+	<p>
+	Perform field aliasing after key/value extraction, but before field <span class="ls_f">lookups</span>, so that, you can specify a lookup table based on a field alias. This can be helpful if one or more fields in the lookup table are identical to fields in your data, but have different names.
+	</p>
+    <p>
+    <span class="ls_c">We are going to build a field alias for the existing "clientip" field.</span>
+    </p>
+    
+
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">1. Create Field Alias</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">2. Test Field Alias</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          <ul class="ls_list">
+            <li>Navigate to <i>Settings</i> and click <i>Fields</i></li>
+            <li>Click the “Add new” to the right of the “Field aliases”</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/new_field_alias.png" width="75%"/><br/><br/></li>
+            <li>Make sure the “Destination app” is <span class="ls_f">search_party_workshop</span></li>
+            <li>In the "Name" box, type <span class="ls_f">cip2customer</span></li>
+            <li>Make sure “Apply to” is set to <span class="ls_f">sourcetype</span>, and in the “named” box you type <span class="ls_f">access_combined</span>. (Make sure you spell access_combined correctly !!)
+            <li>In the "Field aliases" boxes, type <span class="ls_f">clientip</span> = <span class="ls_f">customer</span> (The box to the left of the equal sign(=) is for the existing field, and the box to the right is for the alias)</li>
+            <li>Click the “Save” button</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          <ul class="ls_list">
+            <li>Go to search by first selecting "Apps" -> "Search Party Workshop"</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/go_spw_alias.png" width="75%"/><br/><br/></li>
+            <li>Then click on "Search", which is located on the upper left side just next to "Start Here".</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/ss.png" width="25%"/></li>
+         </ul>
+         </p>
+          <ul class="ls_list">
+            <li>Using a timeframe of October 1, 2016, type the following in the search bar:</li>
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+            </span>
+          </p>
+          <p>
+          <ul class="ls_list">
+            <li>If the field alias worked, you will see a new field called <span class="ls_f">customer</span> under the interesting fields on the left hand side.<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/customer_alias.png" width="80%"/><br/><br/></li>
+          </ul>
+          <a href="tutorial_no_search?mod=$mod$&topic=20"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="action_frame">
+<iframe src="/manager/search_party_workshop/fields?input_mode=1&hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>

@@ -1,0 +1,32 @@
+<nav search_view="search" color="#3267bc">
+  <view name="start_here" default="true"/>
+  <view name="search" />
+  <view name="dashboards" />
+  <collection label="Workshop Topics">
+    <collection label="Basic HTTP Server Access Logs">
+      <a href="tutorial_no_search?mod=web&amp;topic=1">1 | Base Search</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=2">2 | Field Extraction</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=3">3 | Search View</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=4">4 | Table Command</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=5">5 | Timechart</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=6">6 | Eval</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=7">7 | Top and Rare</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=8">8 | Stats</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=9">9 | Eventstats</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=10">10 | Streamstats</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=11">11 | Cluster</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=12">12 | Transaction</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=13">13 | Sort, Head, Tail</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=14">14 | Iplocation, Geostats, Geom</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=15">15 | Use Cases/Review</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=16">16 | Lookups</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=17">17 | Tags</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=18">18 | Event Types</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=19">19 | Field Aliases</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=20">20 | Calculated Fields</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=21">21 | Data Models and Pivot</a>
+      <a href="tutorial_no_search?mod=web&amp;topic=100">100 | Other Education</a>
+      
+    </collection>
+  </collection>
+</nav>

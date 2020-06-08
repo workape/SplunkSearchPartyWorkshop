@@ -1,0 +1,32 @@
+<form stylesheet="css/search_party_workshop.css" script="js/search_party_workshop.js">
+  <label>Search Tutorial</label>
+  <row>
+    <panel>
+      <html id="toggle" src="html/toggle.html"/>
+      <html id="instructions" src="html/$mod$/topic_$topic$.html"/>
+      <html id="searchhtml" src="html/searchbar.html"/>
+      <html id="result_stats" src="html/results.html" depends="$query$"/>
+      <event depends="$query$">
+        <search>
+          <query>$query$</query>
+          <earliest>$queryEarliest$</earliest>
+          <latest>$queryLatest$</latest>
+          <progress>
+            <eval token="resultCount">tonumber('job.resultCount')</eval>
+            <eval token="runDuration">tonumber('job.runDuration')</eval>
+          </progress>
+        </search>
+      </event>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html id="history" src="html/history.html"/>
+      <table id="history_table">
+        <search>
+          <query>| history | search status=completed search!="*eventcount summarize*" search!="*metadata*" search!="*history*" | table search | rex mode=sed field=search "s/^search //g" | dedup search</query>
+        </search>
+      </table>
+    </panel>
+  </row>
+</form>

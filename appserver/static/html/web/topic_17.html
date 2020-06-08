@@ -1,0 +1,111 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Tags</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    In your data, you might have groups of events with related field values. To search more efficiently for these groups of event data, you can assign tags to your data.
+    </p>
+    <p>
+    <span class="ls_f">Tags</span> enable you to assign names to specific field and value combinations, including event type, host, source, or source type.
+    </p>
+    <p>
+    You can use tags to help you track abstract field values, like IP addresses or ID numbers. For example, you could have an IP address related to your main office with the value 192.168.1.2. Tag that IPaddress value as mainoffice, and then search for that tag to find events with that IP address.
+    </p>
+    <p>
+    You can use a tag to group a set of field values together, so that you can search for them with one command. For example, you might find that you have two host names that refer to the same computer. You could give both of those values the same tag. When you search for that tag, events that involve both host name values are returned.
+    </p>
+    <p>
+    You can give extracted fields multiple tags that reflect different aspects of their identity, which enable you to perform tag-based searches to help you narrow the search results.
+    </p>
+    <p>
+    <span class="ls_c">We are going to create tags for your host and sourcetype field/value pairs.</span>
+    </p>
+  </div>
+
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">1. Tag Host</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">2. Tag Sourcetype</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">3. Search Events with Tags</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          <ul class="ls_list">
+            <li>In your search window, go to your first event and click the ">" located in the leftmost column labeled <i><span class="ls_f">i</span></i>.  This will expand the first event and show all of the fields and values that have been collected from that raw event.</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/event_arrow.png" width="75%"/><br/><br/></li>
+            <li>To the right of the <span class="ls_f">host</span> field and value, click on the down arrow, located under the <span class="ls_f">Actions</span> column.</li>
+            <li>Click on “Edit Tags”.</br>
+            <img src="/static/app/search_party_workshop/images/$mod$/edit_tag_host.png" width="75%"/><br/><br/></li>
+            <li>In the “Tag(s)” box, type <span class="ls_f">webserver</span></li>
+            <li>Click the “Save” button</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          <ul class="ls_list">
+            <li>To the right of the <span class="ls_f">sourcetype</span> field and value, click on the down arrow, located under the <span class="ls_f">Actions</span> column.</li>
+            <li>Click on "Edit Tags".</li>
+            <li>In the “Tag(s)” box, type <span class="ls_f">web</span></li>
+            <li>Click the “Save” button</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          <ul class="ls_list">
+            <li>Search for events that have a tag of <span class="ls_f">webserver</span> assigned to any field:</li>
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">tag</span>=<span class="ls_base_v">webserver</span> 
+            </span>
+          </p> 
+          </p>
+          
+          <p>
+          <ul class="ls_list">
+            <li>Search for events that have a tag of <span class="ls_f">webserver</span> assigned to only the host field:</li>
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">tag::host</span>=<span class="ls_base_v">webserver</span> 
+            </span>
+          </p> 
+          </p>
+          
+          <p>
+          <ul class="ls_list">
+            <li>Search for any events that have a tag beginning with <span class="ls_f">web</span> (wildcard search):</li>
+          </ul>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">tag</span>=<span class="ls_base_v">web*</span> 
+            </span>
+           <p>  
+           <a href="tutorial_no_search?mod=$mod$&topic=18"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+           </p>
+          </p>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="action_frame">
+  <iframe src="/app/search_party_workshop/search?earliest=&latest=1475380800&q=search%20index%3D$idx$%20sourcetype%3D$stype$%20&display.page.search.mode=verbose&dispatch.sample_ratio=1&hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>

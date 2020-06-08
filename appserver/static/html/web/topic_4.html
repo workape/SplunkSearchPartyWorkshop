@@ -1,0 +1,109 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Table Command</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    Let's get back to searching!  
+    </p>
+    <p>
+    We've covered base searches to this point, and ensured that we have fields to work with.  Now we can begin discussing what are known as "search commands".  While a base search filters our events down to only those that we're concerned with, the search command will take various actions on those results.  The full list of search commands is available at <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/ListOfSearchCommands" target="_blank">docs.splunk.com</a> for your review.  A search command allows you to do things such as format data, dynamically create new fields, perform statistical evaluation, and more.  Search commands frequently serve multiple purposes through subcommands or functions, as well as optional arguments that may be provided.
+    </p>
+    <p>
+    Search commands are always preceded by a pipe symbol (i.e. "|").  Use of a pipe to chain actions together has a long history in Unix systems.  If you're unfamiliar with Unix that's ok, just think of the pipe as saying "I’d like to use the results of what is on the left side of the ‘|’,as the events to pass to (and work against) the command on the right side of the ‘|’."  There are cases in Splunk where that isn't exactly true, but it's mostly true.  In fact, you can use multiple pipes and commands within a search.  For now, let's start with one of the simplest search commands: the <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Table" target="_blank">table command</a>.
+    </p>
+    <p>
+    The <span class="ls_c">table</span> command will take raw events (i.e. from a base search) and produce a table of results.  Simply specify which fields you'd like to retain from the raw events, in the order you'd like them to be presented. 
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          Let's create a table which shows a few metadata attributes, to include the source host, and the raw event data.  In this example we're asking Splunk to take the result of the search and show us a columnar output of only the value of the host field, and the full raw event (<span class="ls_f">_raw</span>).  Recall that both of these are index-time fields rather than extracted fields.  The <span class="ls_f">host</span> field will represent the host where the event originated.  The <span class="ls_f">_raw</span> field contains the actual event data as it appeared in the originating data source.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">table</span>
+              <span class="ls_f">host</span>
+              <span class="ls_f">_raw</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker "Date Range" option to target the period between Oct 1 and Oct 2 2016. You should have <b>81,757</b> results.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          You can use commas to separate the field names as well as wildcards to capture multiple fields with a single specification.  Here we'll show a table of the events with only the value of the time of the event, the source host, all fields starting with "source" including source and sourcetype, and again the raw event data.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">table</span>
+              <span class="ls_change">
+                <span class="ls_f">_time</span>,
+                <span class="ls_f">host</span>,
+                <span class="ls_f">source*</span>,
+                <span class="ls_f">_raw</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker "Date Range" option to target the period between Oct 1 and Oct 2 2016. You should have <b>81,757</b> results.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          The fields we've used so far are considered the "metadata" attributes, or the "index-time" fields.  But, "search-time" fields exist through field extractions.  We can create and use as many other fields as we'd like.  Let's use a few key fields from this data set.  We'd like to view the values of the time of the event, the IP address of the HTTP client, the portion of the URL which shows which action is being taken (e.g. addtocart), the portion of the URL which contains the ID of the item being viewed by the client, the referer, and the HTTP status code.  Review the raw event example above to see where these fields exist (e.g. action=addtocart&amp;item_id=WPSS-2).
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">table</span>
+              <span class="ls_change">
+                <span class="ls_f">_time</span>,
+                <span class="ls_f">clientip</span>,
+                <span class="ls_f">action</span>,
+                <span class="ls_f">item_id</span>,
+                <span class="ls_f">referer_domain</span>,
+                <span class="ls_f">status</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker "Date Range" option to target the period between Oct 1 and Oct 2 2016. You should have <b>81,757</b> results.</li>
+            <li>Notice that some events don't contain the field, leaving an empty cell in our table.
+          </ul>
+          <a href="tutorial_with_search?mod=$mod$&topic=5"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

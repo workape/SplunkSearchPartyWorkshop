@@ -1,0 +1,186 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Cluster</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Cluster" target="_blank">cluster command</a> is a great example of interesting things that can be done with data.  This command allows us to, based on a threshold, group events together by their similarity.  We can specify a field to <span class="ls_c">cluster</span> on.  If we don't specify a field then the <span class="ls_f">_raw</span> field (the field which represents that actual event) is used.  This command doesn't alter the format or output of the events, but adds two new fields: <span class="ls_f">cluster_count</span> and <span class="ls_f">cluster_label</span>.  These fields associate a basic group label and the count of similar fields with each event, allowing you to easily understand the make-up of the events.  The "Pattern" tab in the standard search view is a bit more involved than what this command provides, but ultimately accomplishes a similar effect.
+    </p>
+    <p>
+    Hopefully, you can imagine that this technique could be useful for understanding that, e.g. a large percentage of your events are very similar, or that you have some very rare types of data included.  Maybe this is normal in your environment, or maybe your site is being subjected to a DDOS attack, or your marketing campaign is working well, or there are some strange and rare requests being made.
+    </p>
+    <p>Example Event:<br/>
+    <code>
+      167.109.84.232 - - [08/Oct/2016 23:59:44:079146] "GET /cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2&JSESSIONID=SD2SCL2FF1ADFF4 HTTP 1.1" 200 305 "http://shop.acme.com/cart.do?action=addtocart&item_id=WPSS-2&product_id=WPSS-2" "mozilla/5.0 (Linux; U; Android 3.2.1; en-us; Xoom Build/HTK75D) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13" 866
+    </code>
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">Example 1</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">Example 2</a></li>
+        <!--
+        <li class="nav"><a href="#e3" data-toggle="tab">Example 3</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">Example 4</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">Example 5</a></li>
+        <li class="nav"><a href="#e6" data-toggle="tab">Example 6</a></li>
+        //-->
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          The search below will use a very loose threshold to group events with, where 0.1 is very loose and 0.9 is more strict.  This provides a "representative" sample event which can give a basic idea of what the full <span class="ls_f">cluster_count</span> number of events look like.  The effect of this search is to get a quick view of the makeup of our events, to detect oddities/anomalies, etc.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">cluster</span>
+              <span class="ls_copts">t</span>=0.3
+              <span class="ls_copts">showcount</span>=t
+              <span class="ls_p">|</span>
+              <span class="ls_c">table</span>
+              <span class="ls_f">cluster_count</span>,
+              <span class="ls_f">cluster_label</span>,
+              <span class="ls_f">_raw</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          We can also specify the field that we'd like to cluster against.  The default is the <span class="ls_f">_raw</span> field, but what if we wanted to cluster our useragent strings?
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">cluster</span>
+              <span class="ls_change">
+                <span class="ls_copts">t</span>=0.1
+                <span class="ls_copts">field</span>=useragent
+                <span class="ls_copts">showcount</span>=t
+              <span class="ls_p">|</span>
+              <span class="ls_c">table</span>
+              <span class="ls_f">useragent</span>,
+              <span class="ls_f">cluster_count</span>
+              </span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>You should have 5 results</li>
+          </ul>
+          <a class="next" href="tutorial_with_search?mod=$mod$&topic=12"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          Let's use our previous <span class="ls_c">eval</span> expression to convert bytes to mbytes and report on the total network utilization for each client.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+              <span class="ls_p">|</span>
+              <span class="ls_c">cluster</span>
+              <span class="ls_cfunc">sum(</span><span class="ls_f">mbytes</span><span class="ls_cfunc">)</span> as mbytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target Oct 24-25 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip</span> and <span class="ls_f">mbytes</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          Let's add the sparkline function to our previous example to get a visual representation of the data.  Sparklines are useful to easily see flat or spikey periods.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">mbytes</span>=<span class="ls_f">bytes</span> / 1024 / 1024
+              <span class="ls_p">|</span>
+              <span class="ls_c">cluster</span>
+              <span class="ls_change"><span class="ls_cfunc">sparkline</span></span>
+              <span class="ls_cfunc">sum(</span><span class="ls_f">mbytes</span><span class="ls_cfunc">)</span> as mbytes
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target Oct 24-25 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip, sparkline, and mbytes</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          If you were interested in seeing the unique list of products that each customer checked out you can use the <span class="ls_cfunc">values()</span> function:
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">cluster</span>
+              <span class="ls_cfunc">values(</span><span class="ls_f">itemId</span><span class="ls_cfunc">)</span> as products
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">clientip</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the "Date Range" option in the time picker to target everything "Since" Oct 23 2016.</li>
+            <li>Results should only include <span class="ls_f">clientip</span> and <span class="ls_f">products</span>.</li>
+          </ul>
+        </div>
+
+        <div class="tab-pane fade" id="e6">
+          <p>
+          Here's an example of <span class="ls_c">cluster</span> pretending to be the <span class="ls_c">timechart</span> command.  Let's say we'd like a report of the distinct client IPs over the course of each day.  We could use the <span class="ls_c">timechart</span> command, or we could employ the <span class="ls_c">bin</span> and <span class="ls_c">cluster</span> commands together.  The <span class="ls_c">bin</span> command allows us to specify that we want to group the time values by 1 day or 1 minute or 1 week, etc. It gives us the opportunity to use the <span class="ls_copts">span</span> argument even though <span class="ls_c">cluster</span> doesn't support it itself.  In this case we want a report on a per-day basis, so we'll use 1 day.
+          </p>
+          <p>
+            <span class="ls_example">
+              <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
+              <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
+              <span class="ls_p">|</span>
+              <span class="ls_c">bin</span>
+              <span class="ls_f">_time</span>
+              <span class="ls_copts">span</span>=1d
+              <span class="ls_p">|</span>
+              <span class="ls_c">cluster</span>
+              <span class="ls_cfunc">distinct_count(</span><span class="ls_f">clientip</span><span class="ls_cfunc">)</span> as distinct_clients
+              <span class="ls_cparams">by</span>
+              <span class="ls_f">_time</span>
+            </span>
+          </p>
+          <ul class="ls_list">
+            <li>Use the time picker to target the entire month of Oct 2016.</li>
+            <li>Results should only include <span class="ls_f">_time</span> and <span class="ls_f">distinct_clients</span>.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

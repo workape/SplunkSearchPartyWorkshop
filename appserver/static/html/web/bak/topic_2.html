@@ -1,0 +1,95 @@
+
+<div id="ls_header">
+  <h3>Module: $mod$ | Topic: $topic$ | Field Extraction</h3>
+</div>
+
+<div id="ls_page">
+  <div id="ls_info">      
+    <p>
+    Data structure within Splunk is generally something which is computed at the time a search needs it.  This is often done through the use of regular expressions.  The Interactive Field Extractor (IFX) allows you to extract fields using regular expression without having to know the regular expression language itself.
+    </p>
+    <p>
+    To this point we've only discussed a few fields, specifically those that are "index-time" fields, or fields that are associated with the actual events at the time of indexing such as <span class="ls_f">_raw, _time, host, index, linecount, source, sourcetype, and splunk_server</span>.  You'll need other fields to be available for you though in order to create the most useful and efficient searches.
+    </p>
+    <p>
+    There are some types of data which Splunk understands natively, and many others that have already been defined and made available through Splunk apps and "Technology Add-ons" on <a href="https://splunkbase.splunk.com" target="_blank">Splunkbase</a>.  However, it's useful to understand the process of field extraction and how to create your own.  Every Splunk user is capable of defining their own field extractions (or "schema") to be used for searches.
+    </p>
+    <p>
+    The following exercise is <b>OPTIONAL</b>. Below you'll see a walkthrough of the steps needed to extract fields as well as the Interactive Field Extractor at the bottom of the page so that you can walk through the instructions without leaving the tutorial.
+    </p>
+  </div>
+  <div id="ls_action">
+    <div id="tabs" class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#e1" data-toggle="tab">1. Select the Sourcetype</a></li>
+        <li class="nav"><a href="#e2" data-toggle="tab">2. Choose the Extraction Method</a></li>
+        <li class="nav"><a href="#e3" data-toggle="tab">3. Select and Name Fields</a></li>
+        <li class="nav"><a href="#e4" data-toggle="tab">4. Validate Fields</a></li>
+        <li class="nav"><a href="#e5" data-toggle="tab">5. Save Fields</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content" id="scrollup">
+        <div class="tab-pane fade in active" id="e1">
+          <p>
+          <ul class="ls_list">
+            <li>Click on the "Sourcetype" pulldown, hover over "Search Party Workshop" and choose "$stype$"<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_1.png" width="35%"/><br/><br/></li>
+            <li>Select an appropriate sample event from the search results generated for you<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_2.png" width="75%"/><br/><br/></li>
+            <li>Click the "Next" button</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e2">
+          <p>
+          <ul class="ls_list">
+            <li>Click the "Regular Expression" method</li>
+            <li>Click "Next"</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e3">
+          <p>
+          <ul class="ls_list">
+            <li>Select the "GET" OR "POST" term found within your selected event (only one of the terms will be present) and provide a name for the value of <b>http_method</b><br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_3.png" width="75%"/><br/><br/></li>
+            <li>Review the highlighted terms and see that Splunk has found where in the event you want to create a field and has captured all relevant values<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_4.png" width="75%"/><br/><br/></li>
+            <li>Click "Next"</li>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e4">
+          <p>
+          <ul class="ls_list">
+            <li>You can hone your selection by reviewing the highlighted items and clicking the "X" to remove any strays that Splunk interpreted incorrectly<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_5.png" width="75%"/><br/><br/></li>
+            <li>Click "Next"<br/>
+          </ul>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+
+        <div class="tab-pane fade" id="e5">
+          <p>
+          <ul class="ls_list">
+            <li>Review your work and click "Finish"<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_6.png" width="75%"/><br/><br/></li>
+          </ul>
+          <a href="tutorial_no_search?mod=$mod$&topic=4"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="action_frame">
+  <iframe src="/app/search_party_workshop/field_extractor?hideChrome=true" width="100%;" height="800px;"></iframe>
+</div>
