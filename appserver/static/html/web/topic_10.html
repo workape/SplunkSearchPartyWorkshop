@@ -9,7 +9,7 @@
     The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Streamstats" target="_blank">streamstats command</a> is another variation of <span class="ls_c">stats</span>.  The "streaming" portion of this command refers to the fact that it works against the streaming search results, allowing you to calculate statistics over moving windows.  <span class="ls_c">streamstats</span> calculates statistics for each event at the time the event is seen.  This is helpful for calculating running totals or averages over e.g. the last 5 events, as well as to make comparisons of the value of the current event against the previous event, etc.
     </p>
     <p>
-    Essentially, while many search commands feel like they operate against the final results of the previous search command only, the <span class="ls_c">streamstats</span> command let's you work against a moving window of search results to make calculations that are dynamic and supremely useful.
+    <span class="ls_c">Streamstats</span> aggregates the statistics to the original data, so all of the original data is accessible for further calculations, should you wish.
     </p>
     <p>
     <span class="ls_c">streamstats</span> also allows for numerous subcommands such as <span class="ls_cfunc">count, avg(), max(), min(), stdev()</span>, etc.
