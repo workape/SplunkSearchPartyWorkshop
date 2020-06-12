@@ -9,7 +9,7 @@
     The <a href="http://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Streamstats" target="_blank">streamstats command</a> is another variation of <span class="ls_c">stats</span>.  The "streaming" portion of this command refers to the fact that it works against the streaming search results, allowing you to calculate statistics over moving windows.  <span class="ls_c">streamstats</span> calculates statistics for each event at the time the event is seen.  This is helpful for calculating running totals or averages over e.g. the last 5 events, as well as to make comparisons of the value of the current event against the previous event, etc.
     </p>
     <p>
-    <span class="ls_c">Streamstats</span> aggregates the statistics to the original data, so all of the original data is accessible for further calculations, should you wish.
+      <span class="ls_c">Streamstats</span> aggregates the statistics to the original data, so all of the original data is accessible for further calculations, should you wish.
     </p>
     <p>
     <span class="ls_c">streamstats</span> also allows for numerous subcommands such as <span class="ls_cfunc">count, avg(), max(), min(), stdev()</span>, etc.
@@ -42,6 +42,11 @@
               <span class="ls_f">index</span>=<span class="ls_base_v">$idx$</span> 
               <span class="ls_f">sourcetype</span>=<span class="ls_base_v">$stype$</span> 
               <span class="ls_p">|</span>
+              <span class="ls_c">eval</span>
+              <span class="ls_f">status_category=</span>
+              <span class="ls_cfunc">if</span>
+              <span class="ls_f">(status < 400, "ok", "bad")</span>
+              <span class="ls_p">|</span>
               <span class="ls_c">streamstats</span>
               <span class="ls_cfunc">count</span>
               <span class="ls_cparams">by</span>
@@ -50,7 +55,7 @@
               <span class="ls_c">table</span>
               <span class="ls_f">_time</span>,
               <span class="ls_f">clientip</span>,
-              <span class="ls_f">count</span>
+              <span class="ls_f">count, status_category</span>
               <span class="ls_p">|</span>
               <span class="ls_c">sort</span>
               <span class="ls_f">clientip</span>
