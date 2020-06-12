@@ -19,7 +19,7 @@
     </p>
     <p>
     The following example shows the first several datasets in a "Call Detail Records" data model. Four top-level root datasets are displayed: All Calls, All Switch Records, Conversations, and Outgoing Calls.</br></br>
-    <img src="/static/app/search_party_workshop/images/$mod$/6.0-dm-root_objects_example.png"/><br/><br/>
+    <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/6.0-dm-root_objects_example.png"/><br/><br/>
     <span class="ls_f">All Calls</span> and <span class="ls_f">All Switch Records</span> are root event datasets that represent all of the calling records and all of the carrier switch records, respectively. Both of these root event datasets have child datasets that deal with subsets of the data owned by their parents. The <span class="ls_f">All Calls</span> root event dataset has child datasets that break down into different call classifications: Voice, SMS, Data, and Roaming. If you were a Pivot user who only wanted to report on aspects of cellphone data usage, you'd select the Data dataset. But if you wanted to create reports that compare the four call types, you'd choose the <span class="ls_f">All Calls</span> root event dataset instead.
     </p>
     <p>
@@ -30,7 +30,7 @@
     </p>
     <p>
     Constraints are inherited by child datasets. Constraint inheritance ensures that each child dataset represents a subset of the data represented by its parent datasets. Your Pivot users can then use these child datasets to design reports with datasets that already have extraneous data prefiltered out.</br></br>
-    <img src="/static/app/search_party_workshop/images/$mod$/Dm-constraints-example.png" width="75%"/><br/><br/>
+    <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/Dm-constraints-example.png" width="75%"/><br/><br/>
     </p>
     <p>
     Say you have a data model called Buttercup Games. Its <span class="ls_f">Successful Purchases</span> dataset is a child of the root event dataset <span class="ls_f">HTTP Requests</span> and is designed to contain only those events that represent successful customer purchase actions. <span class="ls_f">Successful Purchases</span> inherits constraints from <span class="ls_f">HTTP Requests</span> and another parent dataset named <span class="ls_f">Purchases</span>.
@@ -56,15 +56,15 @@
         <div class="tab-pane fade in active" id="e1">
           <p>
           <ul class="ls_list">
-            <li>In the Data Models window, first make sure the App is <span class="ls_f">Search Party Workshop (search_party_workshop)</span></li>
+            <li>In the Data Models window, first make sure the App is <span class="ls_f">Search Party Workshop (SplunkSearchPartyWorkshop)</span></li>
             <li>Click on the “New Data Model” button</br>
-            <img src="/static/app/search_party_workshop/images/$mod$/new_data_model.png" width="75%"/><br/><br/></li>
+            <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/new_data_model.png" width="75%"/><br/><br/></li>
             <li>In the Title box, enter: <span class="ls_f">My Web DM</span></li>
             <li>Leave the ID to the default name generated (Should be <span class="ls_f">My_Web_DM</span>)</li>
             <li>In the "App" dropdown, make sure <span class="ls_f">Search Party Workshop</span> is selected</li>
             <li>Click the “Create” button</li>
           </ul>
-          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/SplunkSearchPartyWorkshop/images/next-button.png"/></a>
           </p>
         </div>
 
@@ -73,14 +73,14 @@
           <ul class="ls_list">
             <li>Click the “Add Dataset” button</li>
             <li>Click on “Root Event”</br>
-            <img src="/static/app/search_party_workshop/images/$mod$/add_root_event.png" width="75%"/><br/><br/></li>
+            <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/add_root_event.png" width="75%"/><br/><br/></li>
             <li>In the “Dataset Name” box, type: <span class="ls_f">WebEvents</span></li>
             <li>Leave the “Dataset ID” value to the default name generated (should be <span class="ls_f">WebEvents</span>)</li>
             <li>In the “Constraints” box, type: <span class="ls_f">index=web tag=web</span> (You should have worked with tags in another part of the tutorial)</li>
             <li>Click the “Preview” button to see what the search results would look like</li>
             <li>Click the “Save” button</li>
           </ul>
-          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/SplunkSearchPartyWorkshop/images/next-button.png"/></a>
           </p>
         </div>
 
@@ -89,11 +89,11 @@
           <ul class="ls_list">
             <li>In the "WebEvents" dataset, click “Add Field” (located on the right-hand side, just under the constraints area)</li>
             <li>Then click "Auto-Extracted”</br>
-            <img src="/static/app/search_party_workshop/images/$mod$/add_attribute.png" width="75%"/><br/><br/></li>
+            <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/add_attribute.png" width="75%"/><br/><br/></li>
             <li>Click (Select) the “Field” boxes for <span class="ls_f">action</span> and <span class="ls_f">status</span>.</li>
             <li>Click on “Save”</li>
           </ul>
-          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/SplunkSearchPartyWorkshop/images/next-button.png"/></a>
           </p>
         </div>
 
@@ -102,7 +102,7 @@
           <ul class="ls_list">
              <li>In the Datasets area on the left-hand side, click on “Add Dataset”.</li>
             <li>Then click on "Child”.<br/>
-            <img src="/static/app/search_party_workshop/images/$mod$/add_child_1.png" width="70%"/></br></br></li>
+            <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/add_child_1.png" width="70%"/></br></br></li>
             <li>In the Dataset Name box, type: <span class="ls_f">Web Data By Status</span>.</li>
             <li>Leave the “Dataset ID” value to the default name generated (should be <span class="ls_f">Web_Data_By_Status</span>).</li>
             <li>Make sure the "Inherit From" says <span class="ls_f">WebEvents</span>.</li>
@@ -110,7 +110,7 @@
             <li>Click on the “Preview” button to see what the search results would look like.</li>
             <li>Click the “Save” button.</li>
             <li>The datasets hierarchy should now look like the below picture:</br>
-            <img src="/static/app/search_party_workshop/images/$mod$/web_data_status_done.png" width="70%"/></br></br></li>  
+            <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/web_data_status_done.png" width="70%"/></br></br></li>  
           </ul>
           </p>
           <p>
@@ -154,8 +154,8 @@
           </ul>
           <p>
           The datasets hierarchy should now look like the below picture with 3 levels of hierarcy:</br></br>
-          <img src="/static/app/search_party_workshop/images/$mod$/final_dm.png" width="75%"/><br/><br/>
-          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/final_dm.png" width="75%"/><br/><br/>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/SplunkSearchPartyWorkshop/images/next-button.png"/></a>
           </p>
         </div>
 
@@ -169,9 +169,9 @@
             <li>One last time, click on "Client Error" in the Dataset hierarchy on the left hand side.</li>
             <li>As you can see on the right-hand side under Constraints, it shows <span class="ls_f">index=web tag=web</span>(Inherited), <span class="ls_f">status=*</span>(Inherited), and <span class="ls_f">status=4*</span>(Constraint)</li>
             <li>This shows that with each level deeper in the hierarchy, the child dataset inherits all of the constraints of the parent:</br></br>
-            <img src="/static/app/search_party_workshop/images/$mod$/child_dm_example.png" width="75%"/><br/><br/></li>
+            <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/child_dm_example.png" width="75%"/><br/><br/></li>
           </ul>
-          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+          <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/SplunkSearchPartyWorkshop/images/next-button.png"/></a>
           </p>
         </div>
         
@@ -179,7 +179,7 @@
           <p>
           <ul class="ls_list">
             <li>Click on “Pivot” in the upper right corner <br/>
-            <img src="/static/app/search_party_workshop/images/$mod$/pivot_button.png" width="85%"/><br/><br/></li>
+            <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/pivot_button.png" width="85%"/><br/><br/></li>
             <li>Click on “Web Data By Status” in the pivot interface.</li>
             <li>Change Time Filter from "All Time" to October 1, 2016</li>
             <li>The total count of “Web Data By Status” should be 81,846</li>
@@ -187,19 +187,19 @@
             <li>To then also split the events by action, click the plus(+) sign again by “Split Rows”, select “action”, and then click “Add to Table”.</li>
             <li>Now we are going to change the “action” values by moving them to columns across the top instead of rows along the side. To do this, grab the grid to the left of the “action” name and drag it over to the “Split Columns” area. </br>
         	</br><li><span class="ls_f">Before:</span> </br>
-        	 <img src="/static/app/search_party_workshop/images/$mod$/action_pre_move.png" width="70%"/><br/><br/></li>
+        	 <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/action_pre_move.png" width="70%"/><br/><br/></li>
         	<li><span class="ls_f">After:</span> </br>
-        	 <img src="/static/app/search_party_workshop/images/$mod$/action_post_move.png" width="70%"/><br/><br/></li>
+        	 <img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/action_post_move.png" width="70%"/><br/><br/></li>
         	<li>Present the results as a column chart</br>
-        	<img src="/static/app/search_party_workshop/images/$mod$/col_chart.png" width="70%"/><br/><br/></li>
+        	<img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/col_chart.png" width="70%"/><br/><br/></li>
         	<li>Present the results as a bar chart</br>
-        	<img src="/static/app/search_party_workshop/images/$mod$/bar_chart.png" width="70%"/><br/><br/></li>
+        	<img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/bar_chart.png" width="70%"/><br/><br/></li>
         	<li>"Save As" a "Dashboard Panel"</br>
-        	<img src="/static/app/search_party_workshop/images/$mod$/save_dashboard.png" width="70%"/><br/><br/></li>
+        	<img src="/static/app/SplunkSearchPartyWorkshop/images/$mod$/save_dashboard.png" width="70%"/><br/><br/></li>
         	<li>Give the "Dashboard Title" a name of your choosing and then click “Save”</li>
         	<li>Click the “View Dashboard” button to see the dashboard you just created.</li>
           </ul>
-        	<a href="tutorial_no_search?mod=$mod$&topic=100"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
+        	<a href="tutorial_no_search?mod=$mod$&topic=100"><img class="sm_next_button" src="/static/app/SplunkSearchPartyWorkshop/images/next-button.png"/></a>
           </p>
         </div>
       </div>
@@ -207,5 +207,5 @@
   </div>
 </div>
 <div id="action_frame">
-  <iframe src="/manager/search_party_workshop/data_model_manager?input_mode=1&sortKey=displayName&sortDirection=asc&count=20&offset=0&ownerSearch=*&visible=true&appSearch=search_party_workshop&hideChrome=true" width="100%;" height="800px;"></iframe>
+  <iframe src="/manager/SplunkSearchPartyWorkshop/data_model_manager?input_mode=1&sortKey=displayName&sortDirection=asc&count=20&offset=0&ownerSearch=*&visible=true&appSearch=SplunkSearchPartyWorkshop&hideChrome=true" width="100%;" height="800px;"></iframe>
 </div>

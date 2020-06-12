@@ -1,4 +1,4 @@
-<form stylesheet="css/search_party_workshop.css" script="js/search_party_workshop.js">
+<form stylesheet="css/SplunkSearchPartyWorkshop.css" script="js/SplunkSearchPartyWorkshop.js">
   <label>Start Here</label>
   <description>Welcome!  Let's learn Splunk!</description>
   <row>
