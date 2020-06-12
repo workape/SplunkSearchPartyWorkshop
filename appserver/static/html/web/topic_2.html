@@ -33,10 +33,14 @@
         <div class="tab-pane fade in active" id="e1">
           <p>
           <ul class="ls_list">
-            <li>Click on the "Sourcetype" pulldown, hover over "Search Party Workshop" and choose "$stype$"<br/>
-            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_1.png" width="35%"/><br/><br/></li>
+            <li>At the Search Bar, run the following search, to bring back the Access Combined data (using "All Time" for the Time Range):</li>
+            <li><span class="ls_example">
+              <span class="ls_f">index=</span><span class="ls_v">$idx$</span> 
+              <span class="ls_f">sourcetype=</span><span class="ls_v">$stype$</span>
+            </span></li>
+            <li>Next, scroll down to the bottom of the page. On the left hand side, click on <b>+Extract New Fields</b></li>
             <li>Select an appropriate sample event from the search results generated for you<br/>
-            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_2.png" width="75%"/><br/><br/></li>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_1.png" width="75%"/><br/><br/></li>
             <li>Click the "Next" button</li>
           </ul>
           <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
@@ -56,10 +60,11 @@
         <div class="tab-pane fade" id="e3">
           <p>
           <ul class="ls_list">
-            <li>Select the "GET" OR "POST" term found within your selected event (only one of the terms will be present) and provide a name for the value of <b>http_method</b><br/>
+            <li>Select the "GET" OR "POST" term found within your selected event (only one of the terms will be present) and provide <b>http_method</b> as the Field Name<br/>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_2.png" width="75%"/><br/><br/></li>
+            <li>Click <b>Add Extraction</b><br/>
+            <li>Review the highlighted terms (examples: GET and POST), and verify that Splunk is extracting that information from the proper location in the events<br/>
             <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_3.png" width="75%"/><br/><br/></li>
-            <li>Review the highlighted terms and see that Splunk has found where in the event you want to create a field and has captured all relevant values<br/>
-            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_4.png" width="75%"/><br/><br/></li>
             <li>Click "Next"</li>
           </ul>
           <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
@@ -70,7 +75,7 @@
           <p>
           <ul class="ls_list">
             <li>You can hone your selection by reviewing the highlighted items and clicking the "X" to remove any strays that Splunk interpreted incorrectly<br/>
-            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_5.png" width="75%"/><br/><br/></li>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_4.png" width="75%"/><br/><br/></li>
             <li>Click "Next"<br/>
           </ul>
           <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
@@ -81,7 +86,7 @@
           <p>
           <ul class="ls_list">
             <li>Review your work and click "Finish"<br/>
-            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_6.png" width="75%"/><br/><br/></li>
+            <img src="/static/app/search_party_workshop/images/$mod$/field_extractor_5.png" width="75%"/><br/><br/></li>
           </ul>
           <a href="tutorial_no_search?mod=$mod$&topic=3"><img class="sm_next_button" src="/static/app/search_party_workshop/images/next-button.png"/></a>
           </p>
