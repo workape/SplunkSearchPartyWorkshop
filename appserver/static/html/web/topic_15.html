@@ -219,7 +219,7 @@
               index=$idx$ sourcetype=$stype$ useragent=* action=purchase | eval cat = case(useragent LIKE "%Android%", "Android", useragent LIKE "%iPhone%", "iOS", useragent LIKE "%iPad%", "iOS", true(), "Other") | timechart count by cat span=1h
             </span>
             <ul class="ls_list">
-              <li>You should have 1,890 results, but only 3 rows in your results</li>
+              <li>You should have 1,890 results, but only 4 columns in your results</li>
             </ul>
             <a class="continue" href="javascript:void(0)"><img class="continue" src="/static/app/search_party_workshop/images/next-button.png"/></a>
           </p>
